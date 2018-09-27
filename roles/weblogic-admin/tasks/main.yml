@@ -1,0 +1,5 @@
+---
+# tasks file for weblogic-admin
+
+- name: Create domain
+  include: 01_create_domain.yml

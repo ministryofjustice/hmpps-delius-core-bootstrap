@@ -1,0 +1,500 @@
+"""
+WLST script : /u01/software/create_domain.py
+Properties file associated with the script : /u01/software/domain.properties
+
+This script will first try to connect to a running server using the
+values in the properties file. If there is no server running, WLST
+will start a server with the values in the properties file. You should change
+these values to suit your environmental needs. After running the script,
+the server that is started(if started one) will be shutdown.
+This might exit you from your WLST shell."""
+
+from weblogic.descriptor import BeanAlreadyExistsException
+from java.lang.reflect import UndeclaredThrowableException
+from java.lang import System
+import javax
+from javax import management
+from javax.management import MBeanException
+from javax.management import RuntimeMBeanException
+import javax.management.MBeanException
+from java.lang import UnsupportedOperationException
+
+
+def initConfigToScriptRun():
+  global startedNewServer
+  loadProperties("/u01/software/domain.properties")
+  hideDisplay()
+  hideDumpStack("true")
+  # try connecting to a running server if it is already running ...
+  if connected=="false":
+    try:
+      URL="t3://"+adminServerListenAddress+":"+adminServerListenPort
+      connect(userName, passWord, URL)
+    except WLSTException:
+      print 'No server is running at '+URL+', the script will start a new server'
+  hideDumpStack("false")
+  if connected=="false":
+    print 'Starting a brand new server at '+URL+' with server name '+adminServerName
+    print 'Please see the server log files for startup messages available at '+domainDir
+    # If a config.xml exists in the domainDir, WLST will use that config.xml to bring up the server.
+    # If you would like WLST to overwrite this directory, you should specify overWriteRootDir='true' as shown below
+    # startServer(adminServerName, domName, URL, userName, passWord,domainDir, overWriteRootDir='true')
+    _timeOut = Integer(TimeOut)
+    # If you want to specify additional JVM arguments, set them using startServerJvmArgs in the property file or below
+    _startServerJvmArgs=startServerJvmArgs
+    if (_startServerJvmArgs=="" and (System.getProperty("java.vendor").find("Sun")>=0 or System.getProperty("java.vendor").find("Hewlett")>=0)):
+      _startServerJvmArgs = " -XX:MaxPermSize=128m"
+    if overWriteRootDir=='true':
+      startServer(adminServerName, domName, URL, userName, passWord,domainDir, timeout=_timeOut.intValue(), overWriteRootDir='true', block='true', jvmArgs=_startServerJvmArgs)
+    else:
+      startServer(adminServerName, domName, URL, userName, passWord,domainDir, timeout=_timeOut.intValue(), block='true', jvmArgs=_startServerJvmArgs)
+    startedNewServer=1
+    print "Started Server. Trying to connect to the server ... "
+    connect(userName, passWord, URL)
+    if connected=='false':
+      stopExecution('You need to be connected.')
+
+def startTransaction():
+  edit()
+  startEdit()
+
+def endTransaction():
+  startEdit()
+  save()
+  activate(block="true")
+
+from javax.management import InstanceAlreadyExistsException
+from java.lang import Exception
+from jarray import array
+
+def endOfScriptRun():
+  global startedNewServer
+  #Save the changes you have made
+  # shutdown the server you have started
+  if startedNewServer==1:
+    print 'Shutting down the server that is started... '
+    shutdown(force='true', block='true')
+  print 'Done executing the script.'
+
+def create_Server(path, beanName):
+  cd(path)
+  try:
+    print "creating mbean of type Server ... "
+    theBean = cmo.lookupServer(beanName)
+    if theBean == None:
+      cmo.createServer(beanName)
+  except java.lang.UnsupportedOperationException, usoe:
+    pass
+  except weblogic.descriptor.BeanAlreadyExistsException,bae:
+    pass
+  except java.lang.reflect.UndeclaredThrowableException,udt:
+    pass
+
+def create_MigratableTarget(path, beanName):
+  cd(path)
+  try:
+    print "creating mbean of type MigratableTarget ... "
+    theBean = cmo.lookupMigratableTarget(beanName)
+    if theBean == None:
+      cmo.createMigratableTarget(beanName)
+  except java.lang.UnsupportedOperationException, usoe:
+    pass
+  except weblogic.descriptor.BeanAlreadyExistsException,bae:
+    pass
+  except java.lang.reflect.UndeclaredThrowableException,udt:
+    pass
+
+def create_Realm(path, beanName):
+  cd(path)
+  try:
+    print "creating mbean of type Realm ... "
+    theBean = cmo.lookupRealm(beanName)
+    if theBean == None:
+      cmo.createRealm(beanName)
+  except java.lang.UnsupportedOperationException, usoe:
+    pass
+  except weblogic.descriptor.BeanAlreadyExistsException,bae:
+    pass
+  except java.lang.reflect.UndeclaredThrowableException,udt:
+    pass
+
+def create_Authorizer(path, beanName):
+  cd(path)
+  try:
+    print "creating mbean of type Authorizer ... "
+    theBean = cmo.lookupAuthorizer(beanName)
+    if theBean == None:
+      cmo.createAuthorizer(beanName,"weblogic.security.providers.xacml.authorization.XACMLAuthorizer")
+  except java.lang.UnsupportedOperationException, usoe:
+    pass
+  except weblogic.descriptor.BeanAlreadyExistsException,bae:
+    pass
+  except java.lang.reflect.UndeclaredThrowableException,udt:
+    pass
+
+def create_Adjudicator(path, beanName):
+  cd(path)
+  try:
+    print "creating mbean of type Adjudicator ... "
+    theBean = cmo.getAdjudicator()
+    if theBean == None:
+      cmo.createAdjudicator(beanName,"weblogic.security.providers.authorization.DefaultAdjudicator")
+  except java.lang.UnsupportedOperationException, usoe:
+    pass
+  except weblogic.descriptor.BeanAlreadyExistsException,bae:
+    pass
+  except java.lang.reflect.UndeclaredThrowableException,udt:
+    pass
+
+def create_AuthenticationProvider(path, beanName):
+  cd(path)
+  try:
+    print "creating mbean of type AuthenticationProvider ... "
+    theBean = cmo.lookupAuthenticationProvider(beanName)
+    if theBean == None:
+      cmo.createAuthenticationProvider(beanName,"weblogic.security.providers.authentication.DefaultAuthenticator")
+  except java.lang.UnsupportedOperationException, usoe:
+    pass
+  except weblogic.descriptor.BeanAlreadyExistsException,bae:
+    pass
+  except java.lang.reflect.UndeclaredThrowableException,udt:
+    pass
+
+def create_OIDAuthenticationProvider(path, beanName):
+  cd(path)
+  try:
+    print "creating mbean of type OracleInternetDirectoryAuthenticator ... "
+    theBean = cmo.lookupAuthenticationProvider(beanName)
+    if theBean == None:
+        cmo.createAuthenticationProvider("OIDAuthenticator","weblogic.security.providers.authentication.OracleInternetDirectoryAuthenticator")
+  except java.lang.UnsupportedOperationException, usoe:
+    pass
+  except weblogic.descriptor.BeanAlreadyExistsException,bae:
+    pass
+  except java.lang.reflect.UndeclaredThrowableException,udt:
+    pass
+
+def create_CertPathProvider(path, beanName):
+  cd(path)
+  try:
+    print "creating mbean of type CertPathProvider ... "
+    theBean = cmo.lookupCertPathProvider(beanName)
+    if theBean == None:
+      cmo.createCertPathProvider(beanName,"weblogic.security.providers.pk.WebLogicCertPathProvider")
+  except java.lang.UnsupportedOperationException, usoe:
+    pass
+  except weblogic.descriptor.BeanAlreadyExistsException,bae:
+    pass
+  except java.lang.reflect.UndeclaredThrowableException,udt:
+    pass
+
+def create_CredentialMapper(path, beanName):
+  cd(path)
+  try:
+    print "creating mbean of type CredentialMapper ... "
+    theBean = cmo.lookupCredentialMapper(beanName)
+    if theBean == None:
+      cmo.createCredentialMapper(beanName,"weblogic.security.providers.credentials.DefaultCredentialMapper")
+  except java.lang.UnsupportedOperationException, usoe:
+    pass
+  except weblogic.descriptor.BeanAlreadyExistsException,bae:
+    pass
+  except java.lang.reflect.UndeclaredThrowableException,udt:
+    pass
+
+def create_RoleMapper(path, beanName):
+  cd(path)
+  try:
+    print "creating mbean of type RoleMapper ... "
+    theBean = cmo.lookupRoleMapper(beanName)
+    if theBean == None:
+      cmo.createRoleMapper(beanName,"weblogic.security.providers.xacml.authorization.XACMLRoleMapper")
+  except java.lang.UnsupportedOperationException, usoe:
+    pass
+  except weblogic.descriptor.BeanAlreadyExistsException,bae:
+    pass
+  except java.lang.reflect.UndeclaredThrowableException,udt:
+    pass
+
+def create_Machine(path, beanName):
+  cd(path)
+  try:
+    print "creating mbean of type Machine ... "
+    theBean = cmo.lookupMachine(beanName)
+    if theBean == None:
+      cmo.createMachine(beanName)
+  except java.lang.UnsupportedOperationException, usoe:
+    pass
+  except weblogic.descriptor.BeanAlreadyExistsException,bae:
+    pass
+  except java.lang.reflect.UndeclaredThrowableException,udt:
+    pass
+
+def create_Cluster(path, beanName):
+  cd(path)
+  try:
+    print "creating mbean of type Cluster ... "
+    theBean = cmo.lookupCluster(beanName)
+    if theBean == None:
+      cmo.createCluster(beanName)
+  except java.lang.UnsupportedOperationException, usoe:
+    pass
+  except weblogic.descriptor.BeanAlreadyExistsException,bae:
+    pass
+  except java.lang.reflect.UndeclaredThrowableException,udt:
+    pass
+
+def create_JDBCSystemResource(path, beanName):
+  cd(path)
+  try:
+    print "creating mbean of type JDBCSystemResource ... "
+    theBean = cmo.lookupJDBCSystemResource(beanName)
+    if theBean == None:
+      cmo.createJDBCSystemResource(beanName)
+  except java.lang.UnsupportedOperationException, usoe:
+    pass
+  except weblogic.descriptor.BeanAlreadyExistsException,bae:
+    pass
+  except java.lang.reflect.UndeclaredThrowableException,udt:
+    pass
+
+def create_Property(path, beanName):
+  cd(path)
+  try:
+    print "creating mbean of type Property ... "
+    theBean = cmo.lookupProperty(beanName)
+    if theBean == None:
+      cmo.createProperty(beanName)
+  except java.lang.UnsupportedOperationException, usoe:
+    pass
+  except weblogic.descriptor.BeanAlreadyExistsException,bae:
+    pass
+  except java.lang.reflect.UndeclaredThrowableException,udt:
+    pass
+  except TypeError:
+    prop = cmo.createProperty()
+    prop.setName(beanName)
+
+def setAttributes_JDBCDataSourceParams_NDELIUS():
+  cd("/JDBCSystemResources/NDELIUS/JDBCResource/NDELIUS/JDBCDataSourceParams/NDELIUS")
+  print "setting attributes for mbean type JDBCDataSourceParams"
+  set("GlobalTransactionsProtocol", "None")
+  set("JNDINames", jarray.array(["NDELIUS"], String))
+
+def setAttributes_JDBCDataSource_NDELIUS_JTA():
+  cd("/JDBCSystemResources/NDELIUS_JTA/JDBCResource/NDELIUS_JTA")
+  print "setting attributes for mbean type JDBCDataSource"
+  set("Name", "NDELIUS_JTA")
+
+def setAttributesFor_user_NDELIUS_JTA():
+  cd("/JDBCSystemResources/NDELIUS_JTA/JDBCResource/NDELIUS_JTA/JDBCDriverParams/NDELIUS_JTA/Properties/NDELIUS_JTA/Properties/user")
+  print "setting attributes for mbean type JDBCProperty"
+  set("Value", "delius_pool")
+  set("Name", "user")
+
+def setAttributes_Domain():
+  cd("/")
+  print "setting attributes for mbean type Domain"
+  set("DomainVersion", "10.3.6.0")
+  set("ProductionModeEnabled", "true")
+  set("ConfigurationVersion", "10.3.6.0")
+  set("AdminServerName", "AdminServer")
+
+def setAttributes_JDBCOracleParams_NDELIUS_JTA():
+  cd("/JDBCSystemResources/NDELIUS_JTA/JDBCResource/NDELIUS_JTA/JDBCOracleParams/NDELIUS_JTA")
+  print "setting attributes for mbean type JDBCOracleParams"
+  set("UseDatabaseCredentials", "true")
+
+def setAttributesFor_NDELIUS():
+  cd("/JDBCSystemResources/NDELIUS")
+  print "setting attributes for mbean type JDBCSystemResource"
+  refBean0 = getMBean("/Servers/AdminServer")
+  theValue = jarray.array([refBean0], Class.forName("weblogic.management.configuration.TargetMBean"))
+  cmo.setTargets(theValue)
+
+def setAttributesFor_NDELIUS_JTA():
+  cd("/JDBCSystemResources/NDELIUS_JTA")
+  print "setting attributes for mbean type JDBCSystemResource"
+  refBean0 = getMBean("/Servers/AdminServer")
+  theValue = jarray.array([refBean0], Class.forName("weblogic.management.configuration.TargetMBean"))
+  cmo.setTargets(theValue)
+
+def setAttributes_JDBCDataSourceParams_NDELIUS_JTA():
+  cd("/JDBCSystemResources/NDELIUS_JTA/JDBCResource/NDELIUS_JTA/JDBCDataSourceParams/NDELIUS_JTA")
+  print "setting attributes for mbean type JDBCDataSourceParams"
+  set("GlobalTransactionsProtocol", "TwoPhaseCommit")
+  set("JNDINames", jarray.array(["NDELIUS_JTA"], String))
+
+def setAttributes_SecurityConfiguration_nodemanager():
+  cd("/SecurityConfiguration/NDelius")
+  print "setting attributes for mbean type SecurityConfiguration"
+  set("NodeManagerUsername", nodemanagerUserName)
+  set("NodeManagerPassword", nodemanagerPassword)
+
+def setAttributes_NodeManager():
+  cd("/Machines/ND_WLN_100/NodeManager/ND_WLN_100")
+  print "setting attributes for mbean type NodeManager"
+  set("NMType", "Plain")
+  set("ListenPort", "5556")
+  set("ListenAddress", nodemanagerListenAddress)
+
+def setAttributesFor_AdminServer():
+  cd("/Servers/AdminServer")
+  print "setting attributes for mbean type Server"
+  set("ListenAddress", adminServerListenAddress)
+
+  cd("/Servers/AdminServer/SSL/AdminServer")
+  print "setting JSSEEnabled attribute"
+  set("JSSEEnabled", "true")
+
+def setAttributesFor_NDMS_100():
+  cd("/Servers/NDMS_100")
+  print "setting attributes for mbean type Server"
+  set("ListenPort", "9704")
+  set("ListenAddress", adminServerListenAddress)
+  bean = getMBean("/Clusters/ND_Cluster")
+  cmo.setCluster(bean)
+
+  bean = getMBean("/Machines/ND_WLN_100")
+  cmo.setMachine(bean)
+
+def setAttributesFor_NDMS_100_migratable():
+  cd("/MigratableTargets/NDMS_100 (migratable)")
+  print "setting attributes for mbean type MigratableTarget"
+  set("Notes", "This is a system generated default migratable target for a server. Do not delete manually.")
+  bean = getMBean("/Clusters/ND_Cluster")
+  cmo.setCluster(bean)
+
+  bean = getMBean("/Servers/NDMS_100")
+  cmo.setUserPreferredServer(bean)
+
+def setAttributes_JDBCDriverParams_NDELIUS_JTA():
+  cd("/JDBCSystemResources/NDELIUS_JTA/JDBCResource/NDELIUS_JTA/JDBCDriverParams/NDELIUS_JTA")
+  print "setting attributes for mbean type JDBCDriverParams"
+  set("Password", deliusPoolPassword)
+  set("DriverName", "oracle.jdbc.xa.client.OracleXADataSource")
+  set("Url", "jdbc:oracle:thin:@"+applicationDatabaseHost+":"+applicationDatabasePort+":"+applicationDatabaseSID)
+
+def setAttributes_JDBCOracleParams_NDELIUS():
+  cd("/JDBCSystemResources/NDELIUS/JDBCResource/NDELIUS/JDBCOracleParams/NDELIUS")
+  print "setting attributes for mbean type JDBCOracleParams"
+  set("UseDatabaseCredentials", "true")
+
+def setAttributesFor_OIDAuthenticator():
+  cd("/SecurityConfiguration/NDelius/Realms/myrealm/AuthenticationProviders/OIDAuthenticator")
+  print "setting attributes for mbean type OracleInternetDirectoryAuthenticator"
+  set("Principal", oidPrincipal)
+  set("Host", oidHost)
+  set("Credential", oidPrincipalPassword)
+  set("ControlFlag", "SUFFICIENT")
+  set("UserBaseDN", oidUserBaseDN)
+  set("Port", "3060")
+  set("GroupBaseDN", oidGroupBaseDN)
+
+def setAttributes_JDBCConnectionPoolParams_NDELIUS():
+  cd("/JDBCSystemResources/NDELIUS/JDBCResource/NDELIUS/JDBCConnectionPoolParams/NDELIUS")
+  print "setting attributes for mbean type JDBCConnectionPoolParams"
+  set("TestTableName", "SQL SELECT 1 FROM DUAL")
+  set("CredentialMappingEnabled", "true")
+
+def setAttributesFor_ND_Cluster():
+  cd("/Clusters/ND_Cluster")
+  print "setting attributes for mbean type Cluster"
+  set("MulticastPort", "7001")
+  set("ClusterMessagingMode", "unicast")
+  set("MulticastAddress", "239.192.0.0")
+
+def setAttributes_JTAMigratableTarget_NDMS_100():
+  cd("/Servers/NDMS_100/JTAMigratableTarget/NDMS_100")
+  print "setting attributes for mbean type JTAMigratableTarget"
+  bean = getMBean("/Clusters/ND_Cluster")
+  cmo.setCluster(bean)
+
+  bean = getMBean("/Servers/NDMS_100")
+  cmo.setUserPreferredServer(bean)
+
+def setAttributesFor_user_NDELIUS():
+  cd("/JDBCSystemResources/NDELIUS/JDBCResource/NDELIUS/JDBCDriverParams/NDELIUS/Properties/NDELIUS/Properties/user")
+  print "setting attributes for mbean type JDBCProperty"
+  set("Value", "delius_pool")
+  set("Name", "user")
+
+def setAttributes_JDBCDataSource_NDELIUS():
+  cd("/JDBCSystemResources/NDELIUS/JDBCResource/NDELIUS")
+  print "setting attributes for mbean type JDBCDataSource"
+  set("Name", "NDELIUS")
+
+def setAttributes_ServerStart_NDMS_100():
+  cd("/Servers/NDMS_100/ServerStart/NDMS_100")
+  print "setting attributes for mbean type ServerStart"
+  set("Arguments", startManagedServerJvmArgs)
+
+def setAttributes_JDBCDriverParams_NDELIUS():
+  cd("/JDBCSystemResources/NDELIUS/JDBCResource/NDELIUS/JDBCDriverParams/NDELIUS")
+  print "setting attributes for mbean type JDBCDriverParams"
+  set("Password", deliusPoolPassword)
+  set("DriverName", "oracle.jdbc.OracleDriver")
+  set("Url", "jdbc:oracle:thin:@"+applicationDatabaseHost+":"+applicationDatabasePort+":"+applicationDatabaseSID)
+
+def setAttributesFor_DefaultIdentityAsserter():
+  cd("/SecurityConfiguration/NDelius/Realms/myrealm/AuthenticationProviders/DefaultIdentityAsserter")
+  print "setting attributes for mbean type DefaultIdentityAsserter"
+  set("ActiveTypes", jarray.array(["AuthenticatedUser"], String))
+
+def setAttributes_JDBCConnectionPoolParams_NDELIUS_JTA():
+  cd("/JDBCSystemResources/NDELIUS_JTA/JDBCResource/NDELIUS_JTA/JDBCConnectionPoolParams/NDELIUS_JTA")
+  print "setting attributes for mbean type JDBCConnectionPoolParams"
+  set("TestTableName", "SQL SELECT 1 FROM DUAL")
+  set("CredentialMappingEnabled", "true")
+
+def setAttributes_SSL():
+  cd("/Servers/AdminServer/SSL/AdminServer")
+  print "setting attributes for mbean type SSL"
+  set("Enabled", "true")
+
+def deploy_jsf():
+  try:
+    deploy("jsf#1.2@1.2.9.0","/u01/app/oracle/middleware/wlserver_10.3/common/deployable-libraries/jsf-1.2.war","AdminServer,",securityModel="DDOnly",libraryModule="true",block="true")
+  except:
+    print "Could not deploy application jsf#1.2@1.2.9.0"
+
+try:
+  initConfigToScriptRun()
+  startTransaction()
+  create_Server("/", "AdminServer")
+  create_Realm("/SecurityConfiguration/NDelius", "myrealm")
+  create_Authorizer("/SecurityConfiguration/NDelius/Realms/myrealm", "XACMLAuthorizer")
+  create_Adjudicator("/SecurityConfiguration/NDelius/Realms/myrealm", "DefaultAdjudicator")
+  create_AuthenticationProvider("/SecurityConfiguration/NDelius/Realms/myrealm", "DefaultAuthenticator")
+  create_AuthenticationProvider("/SecurityConfiguration/NDelius/Realms/myrealm", "DefaultIdentityAsserter")
+  create_OIDAuthenticationProvider("/SecurityConfiguration/NDelius/Realms/myrealm", "OIDAuthenticator")
+  create_CertPathProvider("/SecurityConfiguration/NDelius/Realms/myrealm", "WebLogicCertPathProvider")
+  create_CredentialMapper("/SecurityConfiguration/NDelius/Realms/myrealm", "DefaultCredentialMapper")
+  create_RoleMapper("/SecurityConfiguration/NDelius/Realms/myrealm", "XACMLRoleMapper")
+  create_JDBCSystemResource("/", "NDELIUS")
+  create_Property("/JDBCSystemResources/NDELIUS/JDBCResource/NDELIUS/JDBCDriverParams/NDELIUS/Properties/NDELIUS", "user")
+  create_JDBCSystemResource("/", "NDELIUS_JTA")
+  create_Property("/JDBCSystemResources/NDELIUS_JTA/JDBCResource/NDELIUS_JTA/JDBCDriverParams/NDELIUS_JTA/Properties/NDELIUS_JTA", "user")
+  setAttributesFor_AdminServer()
+  setAttributesFor_DefaultIdentityAsserter()
+  setAttributesFor_OIDAuthenticator()
+  setAttributesFor_NDELIUS()
+  setAttributesFor_NDELIUS_JTA()
+  setAttributesFor_user_NDELIUS()
+  setAttributesFor_user_NDELIUS_JTA()
+  setAttributes_JDBCDataSourceParams_NDELIUS()
+  setAttributes_JDBCDataSource_NDELIUS_JTA()
+  setAttributes_Domain()
+  setAttributes_JDBCOracleParams_NDELIUS_JTA()
+  setAttributes_JDBCDataSourceParams_NDELIUS_JTA()
+  setAttributes_JDBCDriverParams_NDELIUS_JTA()
+  setAttributes_JDBCOracleParams_NDELIUS()
+  setAttributes_JDBCConnectionPoolParams_NDELIUS()
+  setAttributes_JDBCDataSource_NDELIUS()
+  setAttributes_JDBCDriverParams_NDELIUS()
+  setAttributes_JDBCConnectionPoolParams_NDELIUS_JTA()
+  setAttributes_SSL()
+  endTransaction()
+  deploy_jsf()
+finally:
+  endOfScriptRun()

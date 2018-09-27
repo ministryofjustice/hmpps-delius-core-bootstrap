@@ -1,0 +1,11 @@
+- hosts: wli
+  become: true
+  become_user: root
+  become_method: sudo
+  roles:
+    - { role: weblogic-admin }
+#    - { role: base-ndelius-config }
+#    - { role: wli-ndelius-config }
+#    - { role: deploy-ndelius-ear }
+#    - { role: deploy-ndelius-dss-ear }
+#    - { role: deploy-ndelius-iaps-ear }
