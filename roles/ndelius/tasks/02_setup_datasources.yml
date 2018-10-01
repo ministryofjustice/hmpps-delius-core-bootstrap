@@ -1,0 +1,21 @@
+---
+
+- name: Copy scripts
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+  with_items:
+     - { src: 'domain.properties.j2', dest: '/u01/software/domain.properties', mode: '0644', owner: "oracle", group: "oinstall" }
+     - { src: 'setup_datasources.py.j2', dest: '/u01/software/setup_datasources.py', mode: '0755', owner: "oracle", group: "oinstall" }
+
+- name: Create datasources
+  shell: '. ~/.bash_profile && . ${WLS_HOME}/server/bin/setWLSEnv.sh > /dev/null 2>&1 && java weblogic.WLST /u01/software/setup_datasources.py'
+  become: yes
+  become_user: "oracle"
+  register: setup_datasources
+
+- debug:
+    var: setup_datasources

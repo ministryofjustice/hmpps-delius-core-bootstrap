@@ -4,8 +4,5 @@
   become_method: sudo
   roles:
     - { role: weblogic-admin }
-#    - { role: base-ndelius-config }
-#    - { role: wls-ndelius-config }
-#    - { role: deploy-activemq }
-#    - { role: deploy-ndelius-ear }
-#    - { role: deploy-ndelius-spg-ear }
+    - { role: ndelius }
+# TODO   - { role: ndelius-spg }

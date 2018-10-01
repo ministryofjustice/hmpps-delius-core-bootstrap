@@ -1,0 +1,16 @@
+---
+# TODO
+#- name: Copy NDelius.properties
+#  template:
+#    src: "{{ item.src }}"
+#    dest: "{{ item.dest }}"
+#    mode: "{{ item.mode }}"
+#    owner: "{{ item.owner }}"
+#    group: "{{ item.group }}"
+#  with_items:
+#     - { src: 'NDelius.properties.j2', dest: '/u01/software/NDelius.properties', mode: '0644', owner: "oracle", group: "oinstall" }
+#
+#- name: Apply NDelius.properties
+#  shell: '. ~/.bash_profile && . ${WLS_HOME}/server/bin/setWLSEnv.sh > /dev/null 2>&1 && cp -v /u01/software/NDelius.properties ${MW_HOME}/user_projects/domains/NDelius/NDelius.properties'
+#  become: yes
+#  become_user: "oracle"

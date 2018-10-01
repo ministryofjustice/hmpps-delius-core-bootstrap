@@ -1,7 +1,13 @@
-weblogic-admin
+ndelius
 =========
 
-A WebLogic AdminServer with no security or datasource configuration applied.
+Apply the standard NDelius configuration to a weblogic host and deploy the NDelius-ear.ear file.
+ 
+Config includes applying the weblogic datasource + security configuration, as well as adding the following files to the domain root:
+* `NDelius.properties`
+* `nomis-api.properties`
+* `log4j.xml`
+* `password.keyfile`
 
 Requirements
 ------------

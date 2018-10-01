@@ -1,0 +1,14 @@
+---
+# tasks file for ndelius
+
+- name: Setup security realm
+  include: 01_setup_security_realm.yml
+
+- name: Setup datasources
+  include: 02_setup_datasources.yml
+
+- name: Apply NDelius configuration
+  include: 03_apply_nd_config.yml
+
+- name: Deploy NDelius
+  include: 04_deploy_ndelius.yml

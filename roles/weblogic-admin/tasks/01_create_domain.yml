@@ -15,4 +15,7 @@
   shell: '. ~/.bash_profile && . ${WLS_HOME}/server/bin/setWLSEnv.sh > /dev/null 2>&1 && java weblogic.WLST /u01/software/create_domain.py'
   become: yes
   become_user: "oracle"
-  register: wls_createdomain
+  register: create_domain
+
+- debug:
+    var: create_domain
