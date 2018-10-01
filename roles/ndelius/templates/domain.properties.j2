@@ -11,13 +11,12 @@ domainDir=/u01/app/oracle/middleware/user_projects/domains/{{ dom_name|default('
 adminServerListenPort=7001
 startServerJvmArgs=-Xms2048m -Xmx2048m -XX:MaxPermSize=256m
 
-# TODO parameterise:
-applicationDatabaseHost=delius-db.dev.delius-core.probation.hmpps.dsd.io
-applicationDatabasePort=1521
-applicationDatabaseSID=DNDA
-deliusPoolPassword=NDelius1
-oidPrincipal=cn=orcladmin
-oidHost=oid-admin-instance.dev.delius-core.probation.hmpps.dsd.io
-oidPrincipalPassword=oradir1
-oidUserBaseDN=cn=Users,dc=mojaws,dc=internal
-oidGroupBaseDN=cn=EISUsers,cn=Users,dc=mojaws,dc=internal
+applicationDatabaseHost={{ database.host }}
+applicationDatabasePort={{ database.port|default('1521') }}
+applicationDatabaseSID={{ database.sid|default('DNDA') }}
+deliusPoolPassword={{ database.password|default('NDelius1') }}
+oidPrincipal={{ oid.principal|default('cn=orcladmin') }}
+oidHost={{ oid.host }}
+oidPrincipalPassword={{ oid.password|default('oradir1') }}
+oidUserBaseDN=cn=Users,{{ oid.base|default('dc=mojaws,dc=internal') }}
+oidGroupBaseDN=cn=EISUsers,cn=Users,{{ oid.base|default('dc=mojaws,dc=internal') }}
