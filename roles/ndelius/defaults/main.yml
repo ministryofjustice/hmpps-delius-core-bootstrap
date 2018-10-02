@@ -26,3 +26,5 @@ newtech_pdfgenerator_secret: ThisIsASecretKey
 
 usermanagement_secret: ThisIsASecretKey
 
+nomis_client_id: delius
+nomis_client_secret: ThisIsASecretKey

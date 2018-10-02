@@ -9,6 +9,7 @@
   with_items:
      - { src: 'NDelius.properties.j2', dest: '/u01/software/NDelius.properties', mode: '0644', owner: "oracle", group: "oinstall" }
      - { src: 'log4j.xml.j2', dest: '/u01/software/log4j.xml', mode: '0644', owner: "oracle", group: "oinstall" }
+     - { src: 'nomis-api.properties.j2', dest: '/u01/software/nomis-api.properties', mode: '0644', owner: "oracle", group: "oinstall" }
 
 - name: Apply NDelius.properties
   shell: '. ~/.bash_profile && . ${WLS_HOME}/server/bin/setWLSEnv.sh > /dev/null 2>&1 &&
@@ -31,3 +32,14 @@
 
 - debug:
     var: log4j_xml
+
+- name: Apply NOMIS configuration
+  shell: '. ~/.bash_profile &&
+    cp -v /u01/software/nomis-api.properties ${MW_HOME}/user_projects/domains/{{ domain_name }}/nomis-api.properties &&
+    cat ${MW_HOME}/user_projects/domains/{{ domain_name }}/nomis-api.properties'
+  become: yes
+  become_user: "oracle"
+  register: nomis_api_config
+
+- debug:
+    var: nomis_api_config
