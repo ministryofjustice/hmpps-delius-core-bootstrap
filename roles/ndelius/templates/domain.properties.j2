@@ -1,22 +1,22 @@
 exitonerror=false
-adminServerListenAddress=0.0.0.0
-adminServerName={{ admin_server_name|default('AdminServer') }}
-domName={{ dom_name|default('NDelius') }}
-userName={{ admin_user_name|default('weblogic') }}
-passWord={{ admin_password|default('webl0gic') }}
+adminServerListenAddress={{ server_listen_address }}
+adminServerListenPort={{ server_listen_port }}
+adminServerName={{ server_name }}
+domName={{ domain_name }}
+userName={{ server_username }}
+passWord={{ server_password }}
+startServerJvmArgs={{ server_params }}
 overWriteRootDir=true
 TimeOut=240000
 startedNewServer=0
-domainDir=/u01/app/oracle/middleware/user_projects/domains/{{ dom_name|default('NDelius') }}
-adminServerListenPort=7001
-startServerJvmArgs=-Xms2048m -Xmx2048m -XX:MaxPermSize=256m
+domainDir=/u01/app/oracle/middleware/user_projects/domains/{{ domain_name }}
 
-applicationDatabaseHost={{ database.host }}
-applicationDatabasePort={{ database.port|default('1521') }}
-applicationDatabaseSID={{ database.sid|default('DNDA') }}
-deliusPoolPassword={{ database.password|default('NDelius1') }}
-oidPrincipal={{ oid.principal|default('cn=orcladmin') }}
-oidHost={{ oid.host }}
-oidPrincipalPassword={{ oid.password|default('oradir1') }}
-oidUserBaseDN=cn=Users,{{ oid.base|default('dc=mojaws,dc=internal') }}
-oidGroupBaseDN=cn=EISUsers,cn=Users,{{ oid.base|default('dc=mojaws,dc=internal') }}
+applicationDatabaseHost={{ database_host }}
+applicationDatabasePort={{ database_port }}
+applicationDatabaseSID={{ database_sid }}
+deliusPoolPassword={{ database_password }}
+oidPrincipal={{ oid_principal }}
+oidHost={{ oid_host }}
+oidPrincipalPassword={{ oid_password }}
+oidUserBaseDN=cn=Users,{{ oid_base }}
+oidGroupBaseDN=cn=EISUsers,cn=Users,{{ oid_base }}

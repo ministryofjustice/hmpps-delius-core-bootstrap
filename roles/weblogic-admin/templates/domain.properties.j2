@@ -1,12 +1,12 @@
 exitonerror=false
-adminServerListenAddress=0.0.0.0
-adminServerName={{ admin_server_name|default('AdminServer') }}
-domName={{ dom_name|default('NDelius') }}
-userName={{ admin_user_name|default('weblogic') }}
-passWord={{ admin_password|default('webl0gic') }}
+adminServerListenAddress={{ server_listen_address }}
+adminServerListenPort={{ server_listen_port }}
+adminServerName={{ server_name }}
+domName={{ domain_name }}
+userName={{ server_username }}
+passWord={{ server_password }}
+startServerJvmArgs={{ server_params }}
 overWriteRootDir=true
 TimeOut=240000
 startedNewServer=0
-domainDir=/u01/app/oracle/middleware/user_projects/domains/{{ dom_name|default('NDelius') }}
-adminServerListenPort=7001
-startServerJvmArgs=-Xms2048m -Xmx2048m -XX:MaxPermSize=256m
+domainDir=/u01/app/oracle/middleware/user_projects/domains/{{ domain_name }}

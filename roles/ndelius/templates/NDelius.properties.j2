@@ -1,0 +1,43 @@
+# User data store config
+LDAPURI=ldap://{{ oid_host }}:{{ oid_port }}
+PASSWORD_FILE={{ oid_passfile }}
+USER_CONTEXT=cn=Users,{{ oid_base }}
+ND_USER_TYPE=NDUser
+ND_ROLE_TYPE=NDRole
+ND_ROLE_ASSOCIATION_TYPE=NDRoleAssociation
+ROLE_GROUP_TYPE=NDRoleGroup
+COLOUR_PREFERENCES_TYPE=colourPreferences
+FUNCTIONAL_AUTHORISATION_TYPE=UIBusinessInteractionCollection
+USER_PREFERENCES_TYPE=UserPreferences
+USER_HOME_AREA_ATTRIBUTE=userHomeArea
+BUSINESS_INTERACTION_ATTRIBUTE=businesscategory
+ND_ROLE_CATALOGUE_RDN=cn=ndRoleCatalogue
+ND_ROLE_GROUP_RDN=cn=ndRoleGroups
+LDAP_TIMEOUT=100000
+CACHESIZE=20
+LOADSIZE=0.75
+DISABLE_IN_MEMORY_ENCRYPTION=false
+
+# Homepage display details
+ND_TRAINING_MODE={{ ndelius_training_mode }}
+TRAINING_MODE_APP_NAME={{ ndelius_display_name }}
+PROTECTED_MARKING_LEVEL=OFFICIAL
+
+# Development/debugging
+TEST_MODE=false
+LOG_PERF_MON=false
+
+# Document template pdf generator
+PDFCREATION_TEMPLATES={{ newtech_pdfgenerator_templates }}
+PDFCREATION_URL={{ newtech_pdfgenerator_url }}
+PDFCREATION_SECRET={{ newtech_pdfgenerator_secret }}
+
+# New national search
+ELASTICSEARCH_URL={{ newtech_search_url }}
+
+# User management
+USERMANAGEMENT_URL={{ usermanagement_url }}
+USERMANAGEMENT_SECRET={{ usermanagement_secret }}
+
+# Google analytics
+ANALYTICS_TAG={{ ndelius_analytics_tag }}
