@@ -1,2 +1,41 @@
 ---
-# TODO
+
+- name: Copy local NDelius application
+  copy:
+    src: s3/dependencies/delius-core/NDelius-{{ ndelius_version }}/NDelius-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear
+    dest: /u01/software/NDelius-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear
+    owner: oracle
+    group: oinstall
+    mode: 0644
+  register: download_ndelius_application
+# TODO replace the above task with the below once the files are in the s3 bucket
+#- name: Download NDelius application
+#  aws_s3:
+#    bucket: tf-eu-west-2-hmpps-eng-dev-delius-core-dependencies-s3bucket
+#    object: /dependencies/delius-core/NDelius-{{ ndelius_version }}/NDelius-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear
+#    dest: /u01/software/NDelius-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear
+#    mode: get
+#  register: download_ndelius_application
+
+- debug:
+    var: download_ndelius_application
+
+- name: Copy scripts
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+  with_items:
+     - { src: 'deploy_ndelius.py.j2', dest: '/u01/software/deploy_ndelius.py', mode: '0644', owner: "oracle", group: "oinstall" }
+
+- name: Deploy NDelius application
+  shell: '. ~/.bash_profile && . ${WLS_HOME}/server/bin/setWLSEnv.sh > /dev/null 2>&1 &&
+    java weblogic.WLST /u01/software/deploy_ndelius.py NDelius-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear'
+  become: yes
+  become_user: "oracle"
+  register: deploy_ndelius
+
+- debug:
+    var: deploy_ndelius

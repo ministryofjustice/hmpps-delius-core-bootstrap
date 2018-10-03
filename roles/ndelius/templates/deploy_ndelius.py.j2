@@ -1,4 +1,4 @@
-from java.lang import System
+import sys
 
 
 def initConfigToScriptRun():
@@ -23,7 +23,7 @@ def initConfigToScriptRun():
         _timeOut = Integer(TimeOut)
         # If you want to specify additional JVM arguments, set them using startServerJvmArgs in the property file or below
         _startServerJvmArgs=startServerJvmArgs
-        if (_startServerJvmArgs=="" and (System.getProperty("java.vendor").find("Sun")>=0 or System.getProperty("java.vendor").find("Hewlett")>=0)):
+        if _startServerJvmArgs== "" and (System.getProperty("java.vendor").find("Sun") >= 0 or System.getProperty("java.vendor").find("Hewlett") >= 0):
             _startServerJvmArgs = " -XX:MaxPermSize=128m"
         if overWriteRootDir=='true':
             startServer(adminServerName, domName, URL, userName, passWord,domainDir, timeout=_timeOut.intValue(), overWriteRootDir='true', block='true', jvmArgs=_startServerJvmArgs)
@@ -35,74 +35,38 @@ def initConfigToScriptRun():
         if connected=='false':
             stopExecution('You need to be connected.')
 
+
 def startTransaction():
     edit()
     startEdit()
+
 
 def endTransaction():
     startEdit()
     save()
     activate(block="true")
 
+
 def endOfScriptRun():
     global startedNewServer
-    #Save the changes you have made
+    # Save the changes you have made
     # shutdown the server you have started
     if startedNewServer==1:
         print 'Shutting down the server that is started... '
         shutdown(force='true', block='true')
     print 'Done executing the script.'
 
-def create_Server(path, beanName):
-    cd(path)
-    try:
-        print "creating mbean of type Server ... "
-        theBean = cmo.lookupServer(beanName)
-        if theBean == None:
-            cmo.createServer(beanName)
-    except java.lang.UnsupportedOperationException, usoe:
-        pass
-    except weblogic.descriptor.BeanAlreadyExistsException,bae:
-        pass
-    except java.lang.reflect.UndeclaredThrowableException,udt:
-        pass
 
-def setAttributes_Domain():
-    cd("/")
-    print "setting attributes for mbean type Domain"
-    set("DomainVersion", "10.3.6.0")
-    set("ProductionModeEnabled", "true")
-    set("ConfigurationVersion", "10.3.6.0")
-    set("AdminServerName", "AdminServer")
+def deployArtifact(artifact):
+    print "Deploying " + artifact + "... "
+    deploy(artifact, '/u01/software/' + artifact, upload='true', timeout=900000)
+    print "Finished deploying " + artifact
 
-def setAttributesFor_AdminServer():
-    cd("/Servers/AdminServer")
-    print "setting attributes for mbean type Server"
-    set("ListenAddress", adminServerListenAddress)
-
-    cd("/Servers/AdminServer/SSL/AdminServer")
-    print "setting JSSEEnabled attribute"
-    set("JSSEEnabled", "true")
-
-def setAttributes_SSL():
-    cd("/Servers/AdminServer/SSL/AdminServer")
-    print "setting attributes for mbean type SSL"
-    set("Enabled", "true")
-
-def deploy_jsf():
-    try:
-        deploy("jsf#1.2@1.2.9.0","/u01/app/oracle/middleware/wlserver_10.3/common/deployable-libraries/jsf-1.2.war","AdminServer,",securityModel="DDOnly",libraryModule="true",block="true")
-    except:
-        print "Could not deploy application jsf#1.2@1.2.9.0"
 
 try:
     initConfigToScriptRun()
     startTransaction()
-    create_Server("/", "AdminServer")
-    setAttributesFor_AdminServer()
-    setAttributes_Domain()
-    setAttributes_SSL()
+    deployArtifact(sys.argv[1])
     endTransaction()
-    deploy_jsf()
 finally:
     endOfScriptRun()
