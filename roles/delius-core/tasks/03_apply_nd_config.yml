@@ -17,10 +17,6 @@
     cat ${MW_HOME}/user_projects/domains/{{ domain_name }}/NDelius.properties'
   become: yes
   become_user: "oracle"
-  register: ndelius_properties
-
-- debug:
-    var: ndelius_properties
 
 - name: Apply log4j.xml
   shell: '. ~/.bash_profile &&
@@ -28,10 +24,6 @@
     cat ${MW_HOME}/user_projects/domains/{{ domain_name }}/log4j.xml'
   become: yes
   become_user: "oracle"
-  register: log4j_xml
-
-- debug:
-    var: log4j_xml
 
 - name: Apply NOMIS configuration
   shell: '. ~/.bash_profile &&
@@ -39,7 +31,3 @@
     cat ${MW_HOME}/user_projects/domains/{{ domain_name }}/nomis-api.properties'
   become: yes
   become_user: "oracle"
-  register: nomis_api_config
-
-- debug:
-    var: nomis_api_config

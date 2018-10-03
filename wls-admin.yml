@@ -4,5 +4,5 @@
   become_method: sudo
   roles:
     - { role: weblogic-admin }
-    - { role: ndelius }
-# TODO   - { role: ndelius-spg }
+    - { role: delius-core }
+    - { role: delius-spg }
