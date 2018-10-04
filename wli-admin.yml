@@ -1,0 +1,8 @@
+- hosts: wli
+  become: true
+  become_user: root
+  become_method: sudo
+  roles:
+    - { role: weblogic-admin }
+    - { role: ndelius }
+# TODO    - { role: ndelius-interface }

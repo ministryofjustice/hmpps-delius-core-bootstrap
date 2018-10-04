@@ -1,0 +1,8 @@
+- hosts: wls
+  become: true
+  become_user: root
+  become_method: sudo
+  roles:
+    - { role: weblogic-admin }
+    - { role: delius-core }
+    - { role: delius-spg }

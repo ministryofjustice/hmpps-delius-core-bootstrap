@@ -1,0 +1,30 @@
+domain_name: NDelius
+
+server_name: AdminServer
+server_params: -Xms2048m -Xmx2048m -XX:MaxPermSize=256m
+server_username: weblogic
+server_password: webl0gic
+server_listen_address: 0.0.0.0
+server_listen_port: 7001
+
+database_port: 1521
+database_sid: DNDA
+database_password: NDelius1
+
+oid_port: 3060
+oid_base: dc=mojaws,dc=internal
+oid_principal: cn=orcladmin
+oid_password: oradir1
+oid_passfile: /u01/software/password.keyfile # TODO
+
+ndelius_display_name: National Delius
+ndelius_training_mode: production # development, training, production
+ndelius_log_level: INFO
+
+newtech_pdfgenerator_templates: shortFormatPreSentenceReport
+newtech_pdfgenerator_secret: ThisIsASecretKey
+
+usermanagement_secret: ThisIsASecretKey
+
+nomis_client_id: delius
+nomis_client_secret: ThisIsASecretKey

@@ -1,0 +1,21 @@
+---
+
+- name: Copy create domain properties and script
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+  with_items:
+     - { src: 'domain.properties.j2', dest: '/u01/software/domain.properties', mode: '0644', owner: "oracle", group: "oinstall" }
+     - { src: 'create_domain.py.j2', dest: '/u01/software/create_domain.py', mode: '0755', owner: "oracle", group: "oinstall" }
+
+- name: Execute domain configuration
+  shell: '. ~/.bash_profile && . ${WLS_HOME}/server/bin/setWLSEnv.sh > /dev/null 2>&1 && java weblogic.WLST /u01/software/create_domain.py'
+  become: yes
+  become_user: "oracle"
+  register: create_domain
+
+- debug:
+    var: create_domain

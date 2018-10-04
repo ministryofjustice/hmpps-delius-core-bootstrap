@@ -1,0 +1,33 @@
+---
+- name: Copy NDelius.properties
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+  with_items:
+     - { src: 'NDelius.properties.j2', dest: '/u01/software/NDelius.properties', mode: '0644', owner: "oracle", group: "oinstall" }
+     - { src: 'log4j.xml.j2', dest: '/u01/software/log4j.xml', mode: '0644', owner: "oracle", group: "oinstall" }
+     - { src: 'nomis-api.properties.j2', dest: '/u01/software/nomis-api.properties', mode: '0644', owner: "oracle", group: "oinstall" }
+
+- name: Apply NDelius.properties
+  shell: '. ~/.bash_profile && . ${WLS_HOME}/server/bin/setWLSEnv.sh > /dev/null 2>&1 &&
+    cp -v /u01/software/NDelius.properties ${MW_HOME}/user_projects/domains/{{ domain_name }}/NDelius.properties &&
+    cat ${MW_HOME}/user_projects/domains/{{ domain_name }}/NDelius.properties'
+  become: yes
+  become_user: "oracle"
+
+- name: Apply log4j.xml
+  shell: '. ~/.bash_profile &&
+    cp -v /u01/software/log4j.xml ${MW_HOME}/user_projects/domains/{{ domain_name }}/log4j.xml &&
+    cat ${MW_HOME}/user_projects/domains/{{ domain_name }}/log4j.xml'
+  become: yes
+  become_user: "oracle"
+
+- name: Apply NOMIS configuration
+  shell: '. ~/.bash_profile &&
+    cp -v /u01/software/nomis-api.properties ${MW_HOME}/user_projects/domains/{{ domain_name }}/nomis-api.properties &&
+    cat ${MW_HOME}/user_projects/domains/{{ domain_name }}/nomis-api.properties'
+  become: yes
+  become_user: "oracle"
