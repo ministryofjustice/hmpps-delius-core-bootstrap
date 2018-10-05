@@ -12,7 +12,7 @@
      - { src: 'nomis-api.properties.j2', dest: '/u01/software/nomis-api.properties', mode: '0644', owner: "oracle", group: "oinstall" }
 
 - name: Apply NDelius.properties
-  shell: '. ~/.bash_profile && . ${WLS_HOME}/server/bin/setWLSEnv.sh > /dev/null 2>&1 &&
+  shell: '. ~/.bash_profile &&
     cp -v /u01/software/NDelius.properties ${MW_HOME}/user_projects/domains/{{ domain_name }}/NDelius.properties &&
     cat ${MW_HOME}/user_projects/domains/{{ domain_name }}/NDelius.properties'
   become: yes
