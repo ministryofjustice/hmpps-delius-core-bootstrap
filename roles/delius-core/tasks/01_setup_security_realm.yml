@@ -17,8 +17,14 @@
     group: "{{ item.group }}"
   with_items:
      - { src: 'scripts/setup_security_realm.py', dest: '/u01/software/setup_security_realm.py', mode: '0755', owner: "oracle", group: "oinstall" }
+     - { src: 'scripts/setup_roles.py', dest: '/u01/software/setup_roles.py', mode: '0755', owner: "oracle", group: "oinstall" }
 
 - name: Create security realm
   shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/setup_security_realm.py'
+  become: yes
+  become_user: "oracle"
+
+- name: Create global roles
+  shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/setup_roles.py'
   become: yes
   become_user: "oracle"
