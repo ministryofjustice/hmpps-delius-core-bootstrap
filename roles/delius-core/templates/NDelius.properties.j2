@@ -1,6 +1,10 @@
 # User data store config
-#LDAPURI=ldap://{{ oid_host }}:{{ oid_port }}
+{% if oid_host is defined %}
+LDAPURI=ldap://{{ oid_host }}:{{ oid_port }}
+{% else %}
 LDAPURI=ldap://localhost:3060
+TEST_MODE=true
+{% endif %}
 PASSWORD_FILE={{ oid_passfile }}
 USER_CONTEXT=cn=Users,{{ oid_base }}
 ND_USER_TYPE=NDUser
@@ -25,7 +29,6 @@ TRAINING_MODE_APP_NAME={{ ndelius_display_name }}
 PROTECTED_MARKING_LEVEL=OFFICIAL
 
 # Development/debugging
-TEST_MODE=true
 LOG_PERF_MON=false
 
 # Document template pdf generator
