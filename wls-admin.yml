@@ -2,8 +2,6 @@
   become: true
   become_user: root
   become_method: sudo
-#, vars:
   roles:
-    - { role: weblogic-admin }
     - { role: delius-core }
     - { role: delius-spg }

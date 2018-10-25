@@ -3,6 +3,5 @@
   become_user: root
   become_method: sudo
   roles:
-    - { role: weblogic-admin }
-    - { role: ndelius }
+    - { role: delius-core }
 # TODO    - { role: ndelius-interface }
