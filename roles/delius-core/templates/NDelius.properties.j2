@@ -1,5 +1,6 @@
 # User data store config
-LDAPURI=ldap://{{ oid_host }}:{{ oid_port }}
+#LDAPURI=ldap://{{ oid_host }}:{{ oid_port }}
+LDAPURI=ldap://localhost:3060
 PASSWORD_FILE={{ oid_passfile }}
 USER_CONTEXT=cn=Users,{{ oid_base }}
 ND_USER_TYPE=NDUser
@@ -24,7 +25,7 @@ TRAINING_MODE_APP_NAME={{ ndelius_display_name }}
 PROTECTED_MARKING_LEVEL=OFFICIAL
 
 # Development/debugging
-TEST_MODE=false
+TEST_MODE=true
 LOG_PERF_MON=false
 
 # Document template pdf generator
@@ -41,3 +42,8 @@ USERMANAGEMENT_SECRET={{ usermanagement_secret }}
 
 # Google analytics
 ANALYTICS_TAG={{ ndelius_analytics_tag }}
+
+#DMS_HOST=nd-systest-wl08.bcl.local
+#DMS_PORT=8080
+#DMS_OFFICE_URI_HOST=nd-systest-wl08.bcl.local
+#DMS_OFFICE_URI_PORT=8443

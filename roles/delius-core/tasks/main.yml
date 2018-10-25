@@ -1,8 +1,8 @@
 ---
 # tasks file for ndelius
 
-- name: Setup security realm
-  include: 01_setup_security_realm.yml
+#- name: Setup security realm
+#  include: 01_setup_security_realm.yml
 
 - name: Setup datasources
   include: 02_setup_datasources.yml

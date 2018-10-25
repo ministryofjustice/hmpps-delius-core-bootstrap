@@ -1,0 +1,5 @@
+---
+# tasks file for ndelius
+
+- name: Deploy NDelius SPG and ActiveMQ
+  include: 01_deploy_ndelius_spg.yml

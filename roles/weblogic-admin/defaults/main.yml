@@ -1,4 +1,4 @@
-domain_name: NDelius
+#domain_name: NDelius
 
 server_name: AdminServer
 server_params: -Xms2048m -Xmx2048m -XX:MaxPermSize=256m
