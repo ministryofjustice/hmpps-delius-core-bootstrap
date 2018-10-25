@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<!-- NDelius configuration v0.16 generated for ST8-BCL at [28][11] -->
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<appender name="stdfile" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="activemq-log/activemq-broker.log" />
+		<param name="MaxFileSize" value="50MB" />
+		<param name="MaxBackupIndex" value="20" />
+		<param name="Append" value="true" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value=" %-5p %d{yyyy-MMMM-dd HH:mm:ss,SSS} %c:%L - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="bridgelog" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="activemq-log/ndelius-spg-bridge.log" />
+		<param name="MaxFileSize" value="50MB" />
+		<param name="MaxBackupIndex" value="20" />
+		<param name="Append" value="true" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value=" %-5p %d{yyyy-MMMM-dd HH:mm:ss,SSS} %c{1}:%L - %m%n" />
+		</layout>
+	</appender>
+	
+	<appender name="socketNode" class="org.apache.log4j.net.SocketAppender">
+		<param name="Threshold" value="ERROR" /> <!-- any logging events dispatched with severity < ERROR will be dropped by this appender -->
+		<param name="RemoteHost" value="localhost" />
+		<param name="Port" value="4560" />
+	</appender>
+	
+	<appender name="asyncSocketNode" class="org.apache.log4j.AsyncAppender">
+    	<param name="Blocking" value="false"/>
+    	<appender-ref ref="socketNode"/>
+	</appender>
+	
+	<logger name="org.apache.xbean">
+		<level value="INFO" />
+	</logger>
+	
+	<logger name="org.springframework">
+		<level value="INFO" />
+	</logger>
+	
+	<logger name="org.apache.activemq">
+		<level value="INFO" />
+	</logger>
+	
+	<logger name="uk.co.bconline.ndelius">
+		<level value="DEBUG" />
+	</logger>
+	
+	<!--  Provides timestamps for successful transfer of a message from local to remote queue -->
+	<logger name="uk.co.bconline.ndelius.eis.spg.NDeliusOutboundQueueBridge" additivity="false">
+		<level value="INFO" />
+		<appender-ref ref="bridgelog"/>
+	</logger>
+	
+	<!--
+		Fine grained logging for different aspects of the broker implementation can be enabled on an individual basis to makes log analysis for specific problems easier:
+	
+		Set org.apache.activemq.network to DEBUG for monitoring of JMS connection between nDelius & SPG 
+	 	Set org.apache.activemq.usage to DEBUG for monitoring of runtime broker memory usage 
+		Set org.apache.activemq.TransactionContext to DEBUG for monitoring of JTA transaction participation 
+ 		Set org.apache.activemq.broker.inteceptor & uk.co.bconline.ndelius.eis.spg.security to DEBUG for monitoring of digital signing and verification components 	 
+	    Set org.apache.activemq.transport to DEBUG for monitoring of command messages exchanged between the broker and clients 
+	-->
+	
+	<!-- 
+		TODO - determine how resource adapter module's Log4j instance can be isolated from log requests by unrelated classes. 
+			   Disabling logging for these packages shouldn't be required but libraries used by modules included with WebLogic itself 
+			   (e.g. console application) are using the same instance as a result of classloader hierarchy.
+	-->
+	
+	<logger name="org.apache.beehive">
+		<level value="OFF" />
+	</logger>
+	
+	<logger name="org.ajax4jsf">
+		<level value="OFF" />
+	</logger>
+	
+	<logger name="org.eclipse.jetty">
+		<level value="OFF" />
+	</logger>
+	
+	<root>
+		<priority value="ERROR" />
+		<appender-ref ref="stdfile"/>
+		<appender-ref ref="asyncSocketNode"/>
+	</root>
+</log4j:configuration>

@@ -15,7 +15,7 @@ oid_port: 3060
 oid_base: dc=mojaws,dc=internal
 oid_principal: cn=orcladmin
 oid_password: oradir1
-oid_passfile: /u01/app/oracle/middleware/user_projects/domains/ND_SPG/password.keyfile # TODO
+oid_passfile: /u01/software/password.keyfile # TODO
 
 ndelius_display_name: National Delius
 ndelius_training_mode: production # development, training, production

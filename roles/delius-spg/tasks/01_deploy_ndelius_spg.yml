@@ -1,0 +1,98 @@
+---
+- name: Create SPG directory
+  file:
+    path: /u01/software/SPG
+    state: directory
+    owner: oracle
+    group: oinstall
+    mode: 0755
+
+- name: Copy local ActiveMQ application
+  copy:
+    src: s3/dependencies/delius-core/NDelius-{{ ndelius_version }}/SPG/activemq-rar-spg-{{ ndelius_version | regex_replace("\.", "_") }}.rar
+    dest: /u01/software/SPG/activemq-rar-spg-{{ ndelius_version | regex_replace("\.", "_") }}.rar
+    owner: oracle
+    group: oinstall
+    mode: 0644
+
+- name: Copy local NDeliusSPG application
+  copy:
+    src: s3/dependencies/delius-core/NDelius-{{ ndelius_version }}/SPG/NDeliusSPG-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear
+    dest: /u01/software/SPG/NDeliusSPG-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear
+    owner: oracle
+    group: oinstall
+    mode: 0644
+
+- name: Create activemq directory
+  file:
+    path: /u01/software/SPG/activemq
+    state: directory
+    owner: oracle
+    group: oinstall
+    mode: 0755
+
+- name: Copy NDelius SPG Properties
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+  with_items:
+  - { src: 'activemq/broker-config.xml', dest: '/u01/software/SPG/activemq/broker-config.xml', mode: '0644', owner: "oracle", group: "oinstall" }
+  - { src: 'activemq/log4j.xml', dest: '/u01/software/SPG/activemq/log4j.xml', mode: '0644', owner: "oracle", group: "oinstall" }
+  - { src: 'jaas.config', dest: '/u01/software/SPG/jaas.config', mode: '0644', owner: "oracle", group: "oinstall" }
+
+- name: Apply ActiveMQ Properties
+  shell: '. ~/.bash_profile &&
+    cp -r /u01/software/SPG/activemq/ ${MW_HOME}/user_projects/domains/{{ domain_name }}/config/activemq/ '
+  become: yes
+  become_user: "oracle"
+
+- name: Apply jaas config
+  shell: '. ~/.bash_profile &&
+  cp /u01/software/SPG/jaas.config ${MW_HOME}/user_projects/domains/{{ domain_name }}/jaas.config '
+  become: yes
+  become_user: "oracle"
+
+- name: Write password.keyfile
+  shell: "printf 'username=\npassword=\n' >> ${MW_HOME}/user_projects/domains/{{ domain_name }}/password.keyfile"
+
+#- name: Copy local NDelius application
+#  copy:
+#    src: s3/dependencies/delius-core/NDelius-{{ ndelius_version }}/NDeliusSPG-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear
+#    dest: /u01/software/NDeliusSPG-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear
+#    owner: oracle
+#    group: oinstall
+#    mode: 0644
+#  register: download_ndelius_application
+# TODO replace the above task with the below once the files are in the s3 bucket
+#- name: Download NDelius application
+#  aws_s3:
+#    bucket: tf-eu-west-2-hmpps-eng-dev-delius-core-dependencies-s3bucket
+#    object: /dependencies/delius-core/NDelius-{{ ndelius_version }}/NDelius-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear
+#    dest: /u01/software/NDelius-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear
+#    mode: get
+#  register: download_ndelius_application
+#- name: Copy local NDelius application
+#  copy:
+#    src: s3/dependencies/delius-core/NDelius-{{ ndelius_version }}/activemq-rar-spg-{{ ndelius_version | regex_replace("\.", "_") }}.rar
+#    dest: /u01/software/activemq-rar-spg-{{ ndelius_version | regex_replace("\.", "_") }}.rar
+#    owner: oracle
+#    group: oinstall
+#    mode: 0644
+#  register: download_ndelius_application
+
+- name: Copy scripts
+  copy:
+    src: 'scripts/deploy_ndelius_spg.py'
+    dest: '/u01/software/deploy_ndelius_spg.py'
+    mode: '0644'
+    owner: "oracle"
+    group: "oinstall"
+
+
+- name: Deploy NDelius application
+  shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/deploy_ndelius_spg.py activemq-rar-spg-{{ ndelius_version | regex_replace("\.", "_") }}.rar 1 NDeliusSPG-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear 101'
+  become: yes
+  become_user: "oracle"
