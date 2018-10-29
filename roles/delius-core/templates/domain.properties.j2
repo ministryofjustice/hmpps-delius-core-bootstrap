@@ -15,9 +15,12 @@ applicationDatabaseHost={{ database_host }}
 applicationDatabasePort={{ database_port }}
 applicationDatabaseSID={{ database_sid }}
 deliusPoolPassword={{ database_password }}
+
+{% if oid_host is defined %}
 oidPrincipal={{ oid_principal }}
 oidHost={{ oid_host }}
 oidPort={{ oid_port }}
 oidPrincipalPassword={{ oid_password }}
 oidUserBaseDN=cn=Users,{{ oid_base }}
 oidGroupBaseDN=cn=EISUsers,cn=Users,{{ oid_base }}
+{% endif %}

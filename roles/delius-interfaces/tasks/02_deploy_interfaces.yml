@@ -1,0 +1,63 @@
+---
+
+- name: Create directories
+  shell: 'cd /u01/software && mkdir -p EIS/NDeliusDSS-war EIS/NDeliusIAPS-war EIS/NDeliusOASYS-war API'
+  become: yes
+  become_user: "oracle"
+
+- name: Download deployment files
+  when: s3_dependencies_bucket is defined
+  aws_s3:
+    bucket: "{{ s3_dependencies_bucket }}"
+    object: /dependencies/delius-core/NDelius-{{ ndelius_version }}/{{ item.file }}
+    dest: /u01/software/{{ item.file }}
+    mode: get
+  with_items:
+    - { file: 'EIS/NDeliusDSS-war/NDeliusDSS-war-{{ ndelius_version }}.war' }
+    - { file: 'EIS/NDeliusIAPS-war/NDeliusIAPS-war-{{ ndelius_version }}.war' }
+    - { file: 'EIS/NDeliusOASYS-war/NDeliusOASYS-war-{{ ndelius_version }}.war' }
+    - { file: 'API/NDelius-api-{{ ndelius_version | regex_replace("\.", "_") }}.war' }
+
+- name: Copy local deployment files
+  when: s3_dependencies_bucket is not defined
+  copy:
+    src: s3/dependencies/delius-core/NDelius-{{ ndelius_version }}/{{ item.file }}
+    dest: /u01/software/{{ item.file }}
+    owner: oracle
+    group: oinstall
+    mode: 0644
+  with_items:
+    - { file: 'EIS/NDeliusDSS-war/NDeliusDSS-war-{{ ndelius_version }}.war' }
+    - { file: 'EIS/NDeliusIAPS-war/NDeliusIAPS-war-{{ ndelius_version }}.war' }
+    - { file: 'EIS/NDeliusOASYS-war/NDeliusOASYS-war-{{ ndelius_version }}.war' }
+    - { file: 'API/NDelius-api-{{ ndelius_version | regex_replace("\.", "_") }}.war' }
+
+- name: Copy scripts
+  copy:
+    src: scripts/deploy.py
+    dest: /u01/software/deploy.py
+    owner: oracle
+    group: oinstall
+    mode: 0644
+
+- name: Deploy interface applications
+  shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/deploy.py {{ item.name }} {{ item.file }} {{ item.order | default(100) }}'
+  become: yes
+  become_user: "oracle"
+  with_items:
+    - {
+      name: 'NDeliusDSS-war-{{ ndelius_version | regex_replace("\.", "_") }}',
+      file: 'EIS/NDeliusDSS-war/NDeliusDSS-war-{{ ndelius_version }}.war'
+    }
+    - {
+      name: 'NDeliusIAPS-war-{{ ndelius_version | regex_replace("\.", "_") }}',
+      file: 'EIS/NDeliusIAPS-war/NDeliusIAPS-war-{{ ndelius_version }}.war'
+    }
+    - {
+      name: 'NDeliusOASYS-war-{{ ndelius_version | regex_replace("\.", "_") }}',
+      file: 'EIS/NDeliusOASYS-war/NDeliusOASYS-war-{{ ndelius_version }}.war'
+    }
+    - {
+      name: 'NDelius-api-{{ ndelius_version | regex_replace("\.", "_") }}',
+      file: 'API/NDelius-api-{{ ndelius_version | regex_replace("\.", "_") }}.war'
+    }

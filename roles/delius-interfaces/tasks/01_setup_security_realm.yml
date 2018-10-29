@@ -1,0 +1,22 @@
+---
+
+- name: Copy domain.properties
+  template:
+    src: 'domain.properties.j2'
+    dest: '/u01/software/domain.properties'
+    mode: '0644'
+    owner: "oracle"
+    group: "oinstall"
+
+- name: Copy scripts
+  copy:
+    src: 'scripts/setup_roles.py'
+    dest: '/u01/software/setup_roles.py'
+    mode: '0755'
+    owner: "oracle"
+    group: "oinstall"
+
+- name: Create roles/groups
+  shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/setup_roles.py'
+  become: yes
+  become_user: "oracle"

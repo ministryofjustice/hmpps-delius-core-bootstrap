@@ -4,4 +4,4 @@
   become_method: sudo
   roles:
     - { role: delius-core }
-# TODO    - { role: ndelius-interface }
+    - { role: delius-interfaces }
