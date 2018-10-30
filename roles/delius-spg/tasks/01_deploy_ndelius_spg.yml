@@ -73,9 +73,6 @@
   become: yes
   become_user: "oracle"
 
-- name: Write password.keyfile
-  shell: "printf 'username=\npassword=\n' >> ${MW_HOME}/user_projects/domains/{{ domain_name }}/password.keyfile"
-
 - name: Copy scripts
   copy:
     src: 'scripts/deploy_ndelius_spg.py'

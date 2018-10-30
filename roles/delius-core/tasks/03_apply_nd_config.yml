@@ -31,3 +31,7 @@
     cat ${MW_HOME}/user_projects/domains/{{ domain_name }}/nomis-api.properties'
   become: yes
   become_user: "oracle"
+
+- name: Write password.keyfile
+  shell: '. ~/.bash_profile &&
+    printf "username={{ oid_principal }}\npassword={{ oid_password }}" >> {{ oid_passfile }}'
