@@ -1,4 +1,4 @@
-ndelius
+delius-core
 =========
 
 Apply the standard NDelius configuration to a weblogic host and deploy the NDelius-ear.ear file.
@@ -9,36 +9,32 @@ Config includes applying the weblogic datasource + security configuration, as we
 * `log4j.xml`
 * `password.keyfile`
 
-Requirements
-------------
-
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
-
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
-
-Dependencies
-------------
-
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+See the list of variable defaults in [defaults/main.yml](defaults/main.yml). Additional variables are listed below:
+```yaml
+dependencies_s3_bucket: S3 bucket name, local filesystem will be used if not specified
+database_host: Database hostname
+oid_host: LDAP hostname, app will run in test mode if this is not specified
+ndelius_display_name: NDelius display name for homepage
+ndelius_training_mode: development/training/production
+ndelius_log_level: Log level eg. TRACE/DEBUG/INFO/WARN/ERROR
+ndelius_analytics_tag: Google analytics account tag
+newtech_search_url: URL of NewTech national search screen
+newtech_pdfgenerator_url: URL of NewTech PDF generator screen
+usermanagement_url: URL of user management tool
+nomis_url: URL of NOMIS API gateway
+```
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
+    - hosts: wln
       roles:
-         - { role: username.rolename, x: 42 }
+        - { role: delius-core }
 
 License
 -------
 
 BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).

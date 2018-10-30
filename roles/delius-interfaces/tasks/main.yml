@@ -1,0 +1,8 @@
+---
+# tasks file for delius-interfaces
+
+- name: Setup security realm
+  include: 01_setup_security_realm.yml
+
+- name: Deploy interfaces
+  include: 02_deploy_interfaces.yml
