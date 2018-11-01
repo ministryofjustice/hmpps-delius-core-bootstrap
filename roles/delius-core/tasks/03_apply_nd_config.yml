@@ -35,3 +35,5 @@
 - name: Write password.keyfile
   shell: '. ~/.bash_profile &&
     printf "username={{ oid_principal }}\npassword={{ oid_password }}" >> {{ oid_passfile }}'
+  become: yes
+  become_user: "oracle"
