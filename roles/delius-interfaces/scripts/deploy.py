@@ -59,7 +59,7 @@ def endOfScriptRun():
 
 def deployArtifact(name, artifact, order):
     print "Deploying " + artifact + "... "
-    deploy(name, '/u01/software/' + artifact, upload='true', timeout=900000, order=order)
+    deploy(name, '/u01/software/' + artifact, upload='true', timeout=900000, deploymentOrder=order)
     print "Finished deploying " + artifact
 
 
