@@ -1,14 +1,17 @@
 ---
 # tasks file for ndelius
 
+- name: Set WebLogic startup params
+  include: wl_params.yml
+
 - name: Setup security realm
-  include: 01_setup_security_realm.yml
+  include: security_realm.yml
 
 - name: Setup datasources
-  include: 02_setup_datasources.yml
+  include: datasources.yml
 
 - name: Apply NDelius configuration
-  include: 03_apply_nd_config.yml
+  include: nd_config.yml
 
 - name: Deploy NDelius
-  include: 04_deploy_ndelius.yml
+  include: deploy_ndelius.yml

@@ -5,6 +5,8 @@ server_password: webl0gic
 server_listen_address: 0.0.0.0
 server_listen_port: 7001
 
+jvm_mem_args: -Xms2g -Xmx2g
+
 database_port: 1521
 database_sid: DNDA
 database_password: NDelius1
