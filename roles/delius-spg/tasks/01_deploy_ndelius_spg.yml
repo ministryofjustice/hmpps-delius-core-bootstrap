@@ -51,7 +51,7 @@
 
 - name: Copy NDelius SPG Properties
   template:
-    src: "{{ item.src }}"
+    src: "{{ item.file }}.j2"
     dest: "/u01/software/SPG/{{ item.file }}"
     mode: 0644
     owner: oracle
@@ -59,7 +59,36 @@
   with_items:
   - { file: activemq/broker-config.xml }
   - { file: activemq/log4j.xml }
+
+- name: Copy NDelius SPG Properties
+  copy:
+    src: 'scripts/{{ item.file }}'
+    dest: '/u01/software/SPG/{{ item.file }}'
+    mode: 0644
+    owner: oracle
+    group: oinstall
+  with_items:
   - { file: jaas.config }
+
+- name: Copy scripts
+  template:
+    src: "{{ item.file }}.j2"
+    dest: "/u01/software/{{ item.file }}"
+    mode: 0644
+    owner: oracle
+    group: oinstall
+  with_items:
+    - { file: setup_roles.py }
+
+- name: Copy scripts
+  copy:
+    src: 'scripts/{{ item.file }}'
+    dest: '/u01/software/{{ item.file }}'
+    mode: 0644
+    owner: oracle
+    group: oinstall
+  with_items:
+    - { file: deploy.py }
 
 - name: Apply ActiveMQ Properties
   shell: '. ~/.bash_profile &&
@@ -72,17 +101,6 @@
     cp /u01/software/SPG/jaas.config ${MW_HOME}/user_projects/domains/{{ domain_name }}/jaas.config '
   become: yes
   become_user: "oracle"
-
-- name: Copy scripts
-  copy:
-    src: 'scripts/{{ item.file }}'
-    dest: '/u01/software/{{ item.file }}'
-    mode: '0644'
-    owner: "oracle"
-    group: "oinstall"
-  with_items:
-    - { file: deploy.py }
-    - { file: setup_roles.py }
 
 - name: Create global roles
   shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/setup_roles.py'
