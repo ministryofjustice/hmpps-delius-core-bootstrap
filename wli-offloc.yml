@@ -3,6 +3,4 @@
   become_user: root
   become_method: sudo
   roles:
-    - { role: delius-core }
-    - { role: delius-interfaces }
     - { role: delius-dss-standalone }

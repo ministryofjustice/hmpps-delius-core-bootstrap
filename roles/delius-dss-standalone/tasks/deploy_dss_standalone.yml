@@ -1,0 +1,60 @@
+---
+
+- name: Create directories
+  shell: 'cd /u01/software && mkdir -p EIS EIS/fileimporter EIS/filetransfer EIS/encryptionutility'
+  become: yes
+  become_user: "oracle"
+
+- name: Download deployment files
+  become: yes
+  become_user: "oracle"
+  when: s3_dependencies_bucket is defined
+  aws_s3:
+    bucket: "{{ s3_dependencies_bucket }}"
+    object: /dependencies/delius-core/NDelius-{{ ndelius_version }}/{{ item.file }}
+    dest: /u01/software/{{ item.file }}
+    mode: get
+  with_items:
+    - { file: 'EIS/NDelius-DSS-EncryptionUtility-{{ ndelius_version }}-EU.zip' }
+    - { file: 'EIS/NDelius-DSS-FileImporter-{{ ndelius_version }}-FI.zip' }
+    - { file: 'EIS/NDelius-DSS-FileTransfer-{{ ndelius_version }}-FT.zip' }
+
+- name: Copy local deployment files
+  become: yes
+  become_user: "oracle"
+  when: s3_dependencies_bucket is not defined
+  copy:
+    src: s3/dependencies/delius-core/NDelius-{{ ndelius_version }}/{{ item.file }}
+    dest: /u01/software/{{ item.file }}
+    owner: oracle
+    group: oinstall
+    mode: 0644
+  with_items:
+    - { file: 'EIS/NDelius-DSS-EncryptionUtility-{{ ndelius_version }}-EU.zip' }
+    - { file: 'EIS/NDelius-DSS-FileImporter-{{ ndelius_version }}-FI.zip' }
+    - { file: 'EIS/NDelius-DSS-FileTransfer-{{ ndelius_version }}-FT.zip' }
+
+- name: Unzip - encryption util
+  become: yes
+  become_user: "oracle"
+  unarchive:
+    remote_src: yes
+    dest: '/u01/software/EIS/encryptionutility'
+    src: '/u01/software/EIS/NDelius-DSS-EncryptionUtility-{{ ndelius_version }}-EU.zip'
+
+- name: Unzip - file transfer
+  become: yes
+  become_user: "oracle"
+  unarchive:
+    remote_src: yes
+    dest: '/u01/software/EIS/filetransfer'
+    src: '/u01/software/EIS/NDelius-DSS-FileTransfer-{{ ndelius_version }}-FT.zip'
+
+- name: Unzip - file importer
+  become: yes
+  become_user: "oracle"
+  unarchive:
+    remote_src: yes
+    dest: '/u01/software/EIS/fileimporter'
+    src: '/u01/software/EIS/NDelius-DSS-FileImporter-{{ ndelius_version }}-FI.zip'
+
