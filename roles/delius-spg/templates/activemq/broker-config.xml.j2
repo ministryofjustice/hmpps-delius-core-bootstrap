@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- NDelius configuration v0.16 generated for ST8-BCL at [28][11] -->
+<!-- NDelius configuration v${config.version} generated for ${target.environment} at ${timestamp} -->
 <!--
     Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
@@ -7,9 +7,9 @@
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
     the License.  You may obtain a copy of the License at
-   
+
     http://www.apache.org/licenses/LICENSE-2.0
-   
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,59 +21,59 @@
 		xmlns="http://www.springframework.org/schema/beans"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-  
-   <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" />
-   
-   <bean id="log4jInitializer" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" lazy-init="false">
-	    <property name="targetClass" value="org.springframework.util.Log4jConfigurer" />
-	    <property name="targetMethod" value="initLogging" />
-	    <property name="arguments">
-	        <list>
-	            <value>config/activemq/log4j.xml</value>
-	        </list>
-	    </property>
-	</bean>  
-	
+
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" />
+
+	<bean id="log4jInitializer" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" lazy-init="false">
+		<property name="targetClass" value="org.springframework.util.Log4jConfigurer" />
+		<property name="targetMethod" value="initLogging" />
+		<property name="arguments">
+			<list>
+				<value>config/activemq/log4j.xml</value>
+			</list>
+		</property>
+	</bean>
+
 	<bean id="persistenceAdapter" class="org.apache.activemq.store.kahadb.KahaDBPersistenceAdapter">
-		<property name="directory" value="/mnt/activemq-data" />
+		<property name="directory" value="{{ activemq_data_folder }}" />
 		<property name="checkForCorruptJournalFiles" value="true" />
 	</bean>
 
-    <bean id="broker" class="org.apache.activemq.broker.BrokerService" init-method="start" destroy-method="stop">
-        <property name="persistenceAdapter" ref="persistenceAdapter" />
-        <property name="destinations">
-            <list>
-                <ref bean="NDELIUS_INBOUND" />
-                <ref bean="NDELIUS_OUTBOUND" />
-            </list>
-        </property>
-        <property name="jmsBridgeConnectors">
-            <list>
-                <ref bean="connector" />
-            </list>
-        </property>
-        <property name="systemUsage">
-          <bean id="systemUsage" class="org.apache.activemq.usage.SystemUsage">
-            <property name="memoryUsage">
-              <bean id="memoryUsage" class="org.apache.activemq.usage.MemoryUsage">
-                <property name="limit" value="134217728" />
-              </bean>
-            </property>
-            <property name="storeUsage">
-              <bean id="storeUsage" class="org.apache.activemq.usage.StoreUsage">
-				<property name="store" ref="persistenceAdapter" />
-                <property name="limit" value="10737418240" />
-              </bean>
-            </property>
-            <property name="tempUsage">
-              <bean id="tempUsage" class="org.apache.activemq.usage.TempUsage">
-				<property name="store" value="#{broker.tempDataStore}" /> 
-                <property name="limit" value="5368709120" />
-              </bean>
-            </property>
-          </bean>
-        </property>
-        <property name="plugins">
+	<bean id="broker" class="org.apache.activemq.broker.BrokerService" init-method="start" destroy-method="stop">
+		<property name="persistenceAdapter" ref="persistenceAdapter" />
+		<property name="destinations">
+			<list>
+				<ref bean="NDELIUS_INBOUND" />
+				<ref bean="NDELIUS_OUTBOUND" />
+			</list>
+		</property>
+		<property name="jmsBridgeConnectors">
+			<list>
+				<ref bean="connector" />
+			</list>
+		</property>
+		<property name="systemUsage">
+			<bean id="systemUsage" class="org.apache.activemq.usage.SystemUsage">
+				<property name="memoryUsage">
+					<bean id="memoryUsage" class="org.apache.activemq.usage.MemoryUsage">
+						<property name="limit" value="{{ activemq_systemUsage_memory }}" />
+					</bean>
+				</property>
+				<property name="storeUsage">
+					<bean id="storeUsage" class="org.apache.activemq.usage.StoreUsage">
+						<property name="store" ref="persistenceAdapter" />
+						<property name="limit" value="{{ activemq_systemUsage_store }}" />
+					</bean>
+				</property>
+				<property name="tempUsage">
+					<bean id="tempUsage" class="org.apache.activemq.usage.TempUsage">
+						<property name="store" value="#{broker.tempDataStore}" />
+						<property name="limit" value="{{ activemq_systemUsage_temp }}" />
+					</bean>
+				</property>
+			</bean>
+		</property>
+		<property name="plugins">
 			<list>
 				<bean class="org.apache.activemq.security.SimpleAuthenticationPlugin">
 					<property name="anonymousAccessAllowed" value="true" />
@@ -101,17 +101,17 @@
 						<map>
 							<entry key-ref="NDELIUS_OUTBOUND">
 								<bean class="uk.co.bconline.ndelius.eis.spg.messageinterceptors.OutboundMessageInterceptor">
-									<property name="active" value="FALSE" />
+									<property name="active" value="{{ activemq_message_verification }}" />
 									<property name="digitalCertificateHandler" ref="digitalCertificateHandler" />
 								</bean>
 							</entry>
 							<entry key-ref="NDELIUS_INBOUND">
 								<bean class="uk.co.bconline.ndelius.eis.spg.messageinterceptors.InboundMessageInterceptor">
-									<property name="active" value="FALSE" />
+									<property name="active" value="{{ activemq_message_verification }}" />
 									<property name="digitalCertificateHandler" ref="digitalCertificateHandler" />
 								</bean>
 							</entry>
-						 </map>
+						</map>
 					</property>
 				</bean>
 			</list>
@@ -122,33 +122,33 @@
 			</list>
 		</property>
 		<property name="destinationPolicy" ref="destinationPolicyMap" />
-    </bean>
-	
+	</bean>
+
 	<bean id="externalClientConnector" class="org.apache.activemq.broker.TransportConnector">
-		<property name="uri" value="tcp://spg-wls-instance.dev.delius-core.probation.hmpps.dsd.io:61617" />
+		<property name="uri" value="{{ activemq_externalClientConnector }}" />
 	</bean>
-    
-    <bean id="localCF" class="org.apache.activemq.ActiveMQConnectionFactory">
-		  <property name="brokerURL" value="vm://localhost?create=false" />
-		  <property name="prefetchPolicy">
-			  <bean class="org.apache.activemq.ActiveMQPrefetchPolicy">
-				  <property name="queuePrefetch" value="1" />  <!-- Set dispatch queue max size to 1, i.e. only hold the next message pending acknowledgement in RAM -->
-			  </bean>
-		  </property>
+
+	<bean id="localCF" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL" value="vm://localhost?create=false" />
+		<property name="prefetchPolicy">
+			<bean class="org.apache.activemq.ActiveMQPrefetchPolicy">
+				<property name="queuePrefetch" value="1" />  <!-- Set dispatch queue max size to 1, i.e. only hold the next message pending acknowledgement in RAM -->
+			</bean>
+		</property>
 	</bean>
-	
+
 	<!--
 		 Defines subclass of org.apache.activemq.ActiveMQConnectionFactory that will create instances of org.apache.activemq.PatchedActiveMQConnection
 		 containing patch for thread leak defect in org.apache.activemq.ActiveMQConnection. (see https://issues.apache.org/jira/browse/AMQ-4586)
-	 -->	 
+	 -->
 	<bean id="remoteCF" class="org.apache.activemq.PatchedActiveMQConnectionFactory" depends-on="broker">
-		  <property name="brokerURL" value="tcp://spg-wls-instance.dev.delius-core.probation.hmpps.dsd.io:61616" />
-		  <property name="userName" value="" />
-          <property name="password" value="" />
-	</bean>   
-	
+		<property name="brokerURL" value="{{ activemq_remoteCF_brokerURL }}" />
+		<property name="userName" value="{{ activemq_remoteCF_username }}" />
+		<property name="password" value="{{ activemq_remoteCF_password }}" />
+	</bean>
+
 	<bean id="java.lang.Integer.MAX_VALUE" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
-	
+
 	<bean id="connector" class="org.apache.activemq.network.jms.SimpleJmsQueueConnector">
 		<property name="name" value="nDeliusSPGBridge" />
 		<property name="localQueueConnectionFactory" ref="localCF" />
@@ -158,7 +158,7 @@
 				<bean class="uk.co.bconline.ndelius.eis.spg.NDeliusOutboundQueueBridge">
 					<property name="consumerQueue" ref="NDELIUS_OUTBOUND" />
 					<property name="localQueueName" value="NDELIUS_OUTBOUND" />
-					<property name="outboundQueueName" value="nDeliusInboundQueue" />
+					<property name="outboundQueueName" value="{{ activemq_bridge_outboundQueueName }}" />
 				</bean>
 			</list>
 		</property>
@@ -171,15 +171,15 @@
 			</bean>
 		</property>
 	</bean>
-	
+
 	<bean id="NDELIUS_OUTBOUND" class="org.apache.activemq.command.ActiveMQQueue">
-		  <property name="physicalName" value="NDELIUS_OUTBOUND" />
+		<property name="physicalName" value="NDELIUS_OUTBOUND" />
 	</bean>
-	
+
 	<bean id="NDELIUS_INBOUND" class="org.apache.activemq.command.ActiveMQQueue">
-		  <property name="physicalName" value="NDELIUS_INBOUND" />
+		<property name="physicalName" value="NDELIUS_INBOUND" />
 	</bean>
-	
+
 	<bean id="authorisationPolicy" class="org.apache.activemq.security.DefaultAuthorizationMap">
 		<property name="authorizationEntries">
 			<list>
@@ -209,7 +209,7 @@
 			</list>
 		</property>
 	</bean>
-	
+
 	<bean id="destinationPolicyMap" class="org.apache.activemq.broker.region.policy.PolicyMap">
 		<property name="policyEntries">
 			<list>
@@ -219,36 +219,36 @@
 					<property name="maxBrowsePageSize" value="0" /> <!-- Set to zero enabling null selector QueueBrowser enumerations to reflect entire in memory queue representation -->
 					<property name="expireMessagesPeriod" value="0" /> <!-- Scheduled queue scanning for expired messages is N/A - set to zero to disable -->
 					<property name="cursorMemoryHighWaterMark" value="70" /> <!-- Triggers producer flow control and prevents further messages being paged in from storage when reached -->
-					<property name="memoryLimit" value="44040192" /> <!-- Allocate 1/3 of limit defined by memoryUsage bean -->
-				</bean> 
+					<property name="memoryLimit" value="{{ activemq_systemUsage_memory_third }}" /> <!-- Allocate 1/3 of limit defined by memoryUsage bean -->
+				</bean>
 				<bean class="org.apache.activemq.broker.region.policy.PolicyEntry">
 					<property name="queue" value="NDELIUS_INBOUND" />
 					<property name="maxPageSize" value="200" />
-					<property name="maxBrowsePageSize" value="0" /> 
+					<property name="maxBrowsePageSize" value="0" />
 					<property name="expireMessagesPeriod" value="0" />
 					<property name="cursorMemoryHighWaterMark" value="70" />
-					<property name="memoryLimit" value="44040192" />
-				</bean> 
+					<property name="memoryLimit" value="{{ activemq_systemUsage_memory_third }}" />
+				</bean>
 				<bean class="org.apache.activemq.broker.region.policy.PolicyEntry">
 					<property name="queue" value="ActiveMQ.DLQ" />
 					<property name="maxPageSize" value="200" />
-					<property name="maxBrowsePageSize" value="1000000" /> 
+					<property name="maxBrowsePageSize" value="1000000" />
 					<property name="expireMessagesPeriod" value="0" />
 					<property name="cursorMemoryHighWaterMark" value="70" />
-					<property name="memoryLimit" value="44040192" />
-				</bean> 
+					<property name="memoryLimit" value="{{ activemq_systemUsage_memory_third }}" />
+				</bean>
 			</list>
 		</property>
 	</bean>
-	
+
 	<bean id="digitalCertificateHandler" class="uk.co.bconline.ndelius.eis.spg.security.DigitalCertificateHandler">
-		<property name="keyStoreFilePath" value="/home/oracle/keyStore/KeyStoreND" />
+		<property name="keyStoreFilePath" value="{{ activemq_keystore_filepath }}" />
 		<property name="keyStorePasswords">
 			<bean class="uk.co.bconline.ndelius.eis.spg.security.KeyStorePasswords">
-				<property name="encryptedPropertiesFilePath" value="/u01/app/oracle/middleware/user_projects/domains/ND_SPG_NEWGATE/keystore.properties" />
+				<property name="encryptedPropertiesFilePath" value="{{ activemq_keystore_passwords_filepath }}" />
 			</bean>
 		</property>
-		<property name="signingKeyAlias" value="ndelius" />
-		<property name="verificationKeyAlias" value="solirius" />
+		<property name="signingKeyAlias" value="{{ activemq_signing_key_alias }}" />
+		<property name="verificationKeyAlias" value="{{ activemq_verification_key_alias }}" />
 	</bean>
 </beans>
