@@ -52,14 +52,14 @@
 - name: Copy NDelius SPG Properties
   template:
     src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    mode: "{{ item.mode }}"
-    owner: "{{ item.owner }}"
-    group: "{{ item.group }}"
+    dest: "/u01/software/SPG/{{ item.file }}"
+    mode: 0644
+    owner: oracle
+    group: oinstall
   with_items:
-  - { src: 'activemq/broker-config.xml', dest: '/u01/software/SPG/activemq/broker-config.xml', mode: '0644', owner: "oracle", group: "oinstall" }
-  - { src: 'activemq/log4j.xml', dest: '/u01/software/SPG/activemq/log4j.xml', mode: '0644', owner: "oracle", group: "oinstall" }
-  - { src: 'jaas.config', dest: '/u01/software/SPG/jaas.config', mode: '0644', owner: "oracle", group: "oinstall" }
+  - { file: activemq/broker-config.xml }
+  - { file: activemq/log4j.xml }
+  - { file: jaas.config }
 
 - name: Apply ActiveMQ Properties
   shell: '. ~/.bash_profile &&
@@ -69,19 +69,38 @@
 
 - name: Apply jaas config
   shell: '. ~/.bash_profile &&
-  cp /u01/software/SPG/jaas.config ${MW_HOME}/user_projects/domains/{{ domain_name }}/jaas.config '
+    cp /u01/software/SPG/jaas.config ${MW_HOME}/user_projects/domains/{{ domain_name }}/jaas.config '
   become: yes
   become_user: "oracle"
 
 - name: Copy scripts
   copy:
-    src: 'scripts/deploy_ndelius_spg.py'
-    dest: '/u01/software/deploy_ndelius_spg.py'
+    src: 'scripts/{{ item.file }}'
+    dest: '/u01/software/{{ item.file }}'
     mode: '0644'
     owner: "oracle"
     group: "oinstall"
+  with_items:
+    - { file: deploy.py }
+    - { file: setup_roles.py }
 
-- name: Deploy NDelius application
-  shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/deploy_ndelius_spg.py activemq-rar-spg-{{ ndelius_version | regex_replace("\.", "_") }}.rar 1 NDeliusSPG-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear 101'
+- name: Create global roles
+  shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/setup_roles.py'
   become: yes
-  become_user: "oracle"
+  become_user: oracle
+
+- name: Deploy application
+  shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/deploy.py {{ item.name }} {{ item.file }} {{ item.order }}'
+  become: yes
+  become_user: oracle
+  with_items:
+    - {
+      name: 'activemq-rar-spg-{{ ndelius_version | regex_replace("\.", "_") }}',
+      file: 'SPG/activemq-rar-spg-{{ ndelius_version | regex_replace("\.", "_") }}.rar',
+      order: 1
+    }
+    - {
+      name: 'NDeliusSPG-ear-{{ ndelius_version | regex_replace("\.", "_") }}',
+      file: 'SPG/NDeliusSPG-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear',
+      order: 101
+    }

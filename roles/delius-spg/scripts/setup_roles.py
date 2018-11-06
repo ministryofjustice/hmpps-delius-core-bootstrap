@@ -1,4 +1,4 @@
-import sys
+from java.lang import System
 
 
 def initConfigToScriptRun():
@@ -23,7 +23,7 @@ def initConfigToScriptRun():
         _timeOut = Integer(TimeOut)
         # If you want to specify additional JVM arguments, set them using startServerJvmArgs in the property file or below
         _startServerJvmArgs=startServerJvmArgs
-        if _startServerJvmArgs== "" and (System.getProperty("java.vendor").find("Sun") >= 0 or System.getProperty("java.vendor").find("Hewlett") >= 0):
+        if (_startServerJvmArgs=="" and (System.getProperty("java.vendor").find("Sun")>=0 or System.getProperty("java.vendor").find("Hewlett")>=0)):
             _startServerJvmArgs = " -XX:MaxPermSize=128m"
         if overWriteRootDir=='true':
             startServer(adminServerName, domName, URL, userName, passWord,domainDir, timeout=_timeOut.intValue(), overWriteRootDir='true', block='true', jvmArgs=_startServerJvmArgs)
@@ -36,20 +36,9 @@ def initConfigToScriptRun():
             stopExecution('You need to be connected.')
 
 
-def startTransaction():
-    edit()
-    startEdit()
-
-
-def endTransaction():
-    startEdit()
-    save()
-    activate(block="true")
-
-
 def endOfScriptRun():
     global startedNewServer
-    # Save the changes you have made
+    #Save the changes you have made
     # shutdown the server you have started
     if startedNewServer==1:
         print 'Shutting down the server that is started... '
@@ -57,17 +46,18 @@ def endOfScriptRun():
     print 'Done executing the script.'
 
 
-def deployArtifact(artifact, order):
-    print "Deploying " + artifact + "... " + order
-    deploy(artifact, '/u01/software/SPG/' + artifact, upload='true', timeout=900000, deploymentOrder=order)
-    print "Finished deploying " + artifact
+def createRole(name, required_group):
+    cd("/SecurityConfiguration/" + domName + "/Realms/myrealm/RoleMappers/XACMLRoleMapper")
+    try:
+        print "creating " + name + " role..."
+        cmo.createRole(None, name, None, "")
+        cmo.setRoleExpression(None, name, "Grp(" + required_group + ")")
+    except weblogic.management.utils.AlreadyExistsException,ae:
+        pass
 
 
 try:
     initConfigToScriptRun()
-    startTransaction()
-    deployArtifact(sys.argv[1], sys.argv[2])
-    deployArtifact(sys.argv[3], sys.argv[4])
-    endTransaction()
+    createRole("SPG_Security_Role", "SPG-Group")
 finally:
     endOfScriptRun()
