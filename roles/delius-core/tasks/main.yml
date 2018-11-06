@@ -1,6 +1,9 @@
 ---
 # tasks file for ndelius
 
+- name: Set WebLogic startup params
+  include: wl_params.yml
+
 - name: Setup security realm
   include: security_realm.yml
 

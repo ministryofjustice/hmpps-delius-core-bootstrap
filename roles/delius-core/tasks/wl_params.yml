@@ -1,0 +1,8 @@
+---
+- name: Set JVM args
+  become: yes
+  become_user: oracle
+  replace:
+    path: '/u01/app/oracle/middleware/user_projects/domains/{{ domain_name }}/bin/setDomainEnv.sh'
+    regexp: '"-Xms(.+) -Xmx(.+)"'
+    replace: '"{{ jvm_mem_args }}"'
