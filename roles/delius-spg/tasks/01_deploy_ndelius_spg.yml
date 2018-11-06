@@ -69,19 +69,27 @@
 
 - name: Apply jaas config
   shell: '. ~/.bash_profile &&
-  cp /u01/software/SPG/jaas.config ${MW_HOME}/user_projects/domains/{{ domain_name }}/jaas.config '
+    cp /u01/software/SPG/jaas.config ${MW_HOME}/user_projects/domains/{{ domain_name }}/jaas.config '
   become: yes
   become_user: "oracle"
 
 - name: Copy scripts
   copy:
-    src: 'scripts/deploy_ndelius_spg.py'
-    dest: '/u01/software/deploy_ndelius_spg.py'
+    src: 'scripts/{{ item.file }}'
+    dest: '/u01/software/{{ item.file }}'
     mode: '0644'
     owner: "oracle"
     group: "oinstall"
+  with_items:
+    - { file: deploy_ndelius_spg.py }
+    - { file: setup_roles.py }
+
+- name: Create global roles
+  shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/setup_roles.py'
+  become: yes
+  become_user: oracle
 
 - name: Deploy NDelius application
   shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/deploy_ndelius_spg.py activemq-rar-spg-{{ ndelius_version | regex_replace("\.", "_") }}.rar 1 NDeliusSPG-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear 101'
   become: yes
-  become_user: "oracle"
+  become_user: oracle
