@@ -13,19 +13,25 @@
   copy:
     src: s3/dependencies/delius-core/NDelius-{{ ndelius_version }}/NDelius-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear
     dest: /u01/software/NDelius-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear
+    mode: 0644
     owner: oracle
     group: oinstall
-    mode: 0644
 
 - name: Copy scripts
   copy:
-    src: 'scripts/deploy_ndelius.py'
-    dest: '/u01/software/deploy_ndelius.py'
-    mode: '0644'
-    owner: "oracle"
-    group: "oinstall"
+    src: scripts/deploy.py
+    dest: /u01/software/deploy.py
+    mode: 0644
+    owner: oracle
+    group: oinstall
 
-- name: Deploy NDelius application
-  shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/deploy_ndelius.py NDelius-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear'
+- name: Deploy application
+  shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/deploy.py {{ item.name }} {{ item.file }} {{ item.order }}'
   become: yes
-  become_user: "oracle"
+  become_user: oracle
+  with_items:
+    - {
+      name: 'NDelius-ear-{{ ndelius_version | regex_replace("\.", "_") }}',
+      file: 'NDelius-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear',
+      order: 100
+    }

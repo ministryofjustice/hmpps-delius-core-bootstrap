@@ -57,16 +57,16 @@ def endOfScriptRun():
     print 'Done executing the script.'
 
 
-def deployArtifact(artifact):
+def deployArtifact(name, artifact, order):
     print "Deploying " + artifact + "... "
-    deploy(artifact, '/u01/software/' + artifact, upload='true', timeout=900000)
+    deploy(name, '/u01/software/' + artifact, upload='true', timeout=900000, deploymentOrder=int(order))
     print "Finished deploying " + artifact
 
 
 try:
     initConfigToScriptRun()
     startTransaction()
-    deployArtifact(sys.argv[1])
+    deployArtifact(sys.argv[1], sys.argv[2], sys.argv[3])
     endTransaction()
 finally:
     endOfScriptRun()
