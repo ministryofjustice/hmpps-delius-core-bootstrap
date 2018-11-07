@@ -46,31 +46,22 @@ def endOfScriptRun():
     print 'Done executing the script.'
 
 
-def createGroups():
-    cd("/SecurityConfiguration/" + domName + "/Realms/myrealm/AuthenticationProviders/DefaultAuthenticator")
-    try:
-        print "creating APIUsers group..."
-        cmo.createGroup("APIUsers", "")
-    except weblogic.management.utils.AlreadyExistsException,ae:
-        pass
-
-
 def createRole(name, required_group):
     cd("/SecurityConfiguration/" + domName + "/Realms/myrealm/RoleMappers/XACMLRoleMapper")
     try:
         print "creating " + name + " role..."
         cmo.createRole(None, name, None, "")
+{% if oid_host is defined %}
         cmo.setRoleExpression(None, name, "Grp(" + required_group + ")")
+{% else %}
+        cmo.setRoleExpression(None, name, "?weblogic.entitlement.rules.UncheckedPolicy()")
+{% endif %}
     except weblogic.management.utils.AlreadyExistsException,ae:
         pass
 
 
 try:
     initConfigToScriptRun()
-    createGroups()
-    createRole("APIUsers", "APIUsers")
-    createRole("DSS_Security_Role", "DSS-Group")
-    createRole("IAPS_Security_Role", "IAPS-Group")
-    createRole("OASYS_Security_Role", "OASYS-Group")
+    createRole("SPG_Security_Role", "SPG-Group")
 finally:
     endOfScriptRun()

@@ -51,19 +51,48 @@
 
 - name: Copy NDelius SPG Properties
   template:
-    src: "{{ item.src }}"
-    dest: "/u01/software/SPG/{{ item.dest }}"
+    src: "{{ item.file }}.j2"
+    dest: "/u01/software/SPG/{{ item.file }}"
     mode: 0644
     owner: oracle
     group: oinstall
   with_items:
-  - { src: activemq/broker-config.xml.j2, dest: activemq/broker-config.xml }
-  - { src: activemq/log4j.xml, dest: activemq/log4j.xml }
-  - { src: jaas.config, dest: jaas.config }
+  - { file: activemq/broker-config.xml }
+  - { file: activemq/log4j.xml }
+
+- name: Copy NDelius SPG Properties
+  copy:
+    src: 'scripts/{{ item.file }}'
+    dest: '/u01/software/SPG/{{ item.file }}'
+    mode: 0644
+    owner: oracle
+    group: oinstall
+  with_items:
+  - { file: jaas.config }
+
+- name: Copy scripts
+  template:
+    src: "{{ item.file }}.j2"
+    dest: "/u01/software/{{ item.file }}"
+    mode: 0644
+    owner: oracle
+    group: oinstall
+  with_items:
+    - { file: setup_roles.py }
+
+- name: Copy scripts
+  copy:
+    src: 'scripts/{{ item.file }}'
+    dest: '/u01/software/{{ item.file }}'
+    mode: 0644
+    owner: oracle
+    group: oinstall
+  with_items:
+    - { file: deploy.py }
 
 - name: Apply ActiveMQ Properties
   shell: '. ~/.bash_profile &&
-    cp -r /u01/software/SPG/activemq/* ${MW_HOME}/user_projects/domains/{{ domain_name }}/config/activemq/ '
+    cp -r /u01/software/SPG/activemq/ ${MW_HOME}/user_projects/domains/{{ domain_name }}/config/activemq/ '
   become: yes
   become_user: "oracle"
 
@@ -73,62 +102,23 @@
   become: yes
   become_user: "oracle"
 
-- name: Update setDomainEnv for GC & jaas
-  lineinfile:
-    path:        '/u01/app/oracle/middleware/user_projects/domains/{{ domain_name }}/bin/setDomainEnv.sh'
-    insertbefore: '^JAVA_OPTIONS="${JAVA_OPTIONS}"'
-    line:        'JAVA_OPTIONS="${JAVA_OPTIONS} -Djava.security.auth.login.config=jaas.config -XX:+UseG1GC "\n\n'
-
-- name: Copy scripts
-  copy:
-    src: 'scripts/{{ item.file }}'
-    dest: '/u01/software/{{ item.file }}'
-    mode: '0644'
-    owner: "oracle"
-    group: "oinstall"
-  with_items:
-    - { file: deploy.py }
-    - { file: setup_roles.py }
-
-- debug:
-    msg: "DONE Copy scripts"
-
 - name: Create global roles
   shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/setup_roles.py'
   become: yes
   become_user: oracle
 
-- debug:
-    msg: "DONE Create global roles"
-
-#- name: Deploy application
-#  shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/deploy.py {{ item.name }} {{ item.file }} {{ item.order }}'
-#  become: yes
-#  become_user: oracle
-#  with_items:
-#    - {
-#      name: 'activemq-rar-spg-{{ ndelius_version | regex_replace("\.", "_") }}',
-#      file: 'SPG/activemq-rar-spg-{{ ndelius_version | regex_replace("\.", "_") }}.rar',
-#      order: 1
-#    }
-#    - {
-#      name: 'NDeliusSPG-ear-{{ ndelius_version | regex_replace("\.", "_") }}',
-#      file: 'SPG/NDeliusSPG-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear',
-#      order: 101
-#    }
-
-- name: Deploy NDelius SPG application
-  shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/deploy.py activemq-rar-spg-{{ ndelius_version | regex_replace("\.", "_") }}.rar SPG/activemq-rar-spg-{{ ndelius_version | regex_replace("\.", "_") }}.rar 1'
+- name: Deploy application
+  shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/deploy.py {{ item.name }} {{ item.file }} {{ item.order }}'
   become: yes
   become_user: oracle
-
-- debug:
-    msg: "DONE Deploy activemq"
-
-- name: Deploy NDelius SPG application
-  shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/deploy.py NDeliusSPG-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear SPG/NDeliusSPG-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear 101'
-  become: yes
-  become_user: oracle
-
-- debug:
-    msg: "DONE Deploy application"
+  with_items:
+    - {
+      name: 'activemq-rar-spg-{{ ndelius_version | regex_replace("\.", "_") }}',
+      file: 'SPG/activemq-rar-spg-{{ ndelius_version | regex_replace("\.", "_") }}.rar',
+      order: 1
+    }
+    - {
+      name: 'NDeliusSPG-ear-{{ ndelius_version | regex_replace("\.", "_") }}',
+      file: 'SPG/NDeliusSPG-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear',
+      order: 101
+    }
