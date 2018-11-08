@@ -1,0 +1,163 @@
+---
+
+- name: Create directories
+  shell: 'cd /u01/software/EIS && mkdir -p EIS offloc fileimporter filetransfer encryptionutility encryptionutility/resource'
+  become: yes
+  become_user: "oracle"
+
+- name: Download deployment files
+  become: yes
+  become_user: "oracle"
+  when: s3_dependencies_bucket is defined
+  aws_s3:
+    bucket: "{{ s3_dependencies_bucket }}"
+    object: /dependencies/delius-core/NDelius-{{ ndelius_version }}/{{ item.file }}
+    dest: /u01/software/{{ item.file }}
+    mode: get
+  with_items:
+    - { file: "EIS/NDelius-DSS-EncryptionUtility-{{ ndelius_version }}-EU.zip" }
+    - { file: "EIS/NDelius-DSS-FileImporter-{{ ndelius_version }}-FI.zip" }
+    - { file: "EIS/NDelius-DSS-FileTransfer-{{ ndelius_version }}-FT.zip" }
+
+- name: Copy local deployment files
+  become: yes
+  become_user: "oracle"
+  when: s3_dependencies_bucket is not defined
+  copy:
+    src: s3/dependencies/delius-core/NDelius-{{ ndelius_version }}/{{ item.file }}
+    dest: /u01/software/{{ item.file }}
+    owner: oracle
+    group: oinstall
+    mode: 0770
+  with_items:
+    - { file: "EIS/NDelius-DSS-EncryptionUtility-{{ ndelius_version }}-EU.zip" }
+    - { file: "EIS/NDelius-DSS-FileImporter-{{ ndelius_version }}-FI.zip" }
+    - { file: "EIS/NDelius-DSS-FileTransfer-{{ ndelius_version }}-FT.zip" }
+
+- name: Unzip - encryption util
+  become: yes
+  become_user: "oracle"
+  unarchive:
+    mode: 0770
+    owner: oracle
+    remote_src: yes
+    dest: '/u01/software/EIS/encryptionutility'
+    src: '/u01/software/EIS/NDelius-DSS-EncryptionUtility-{{ ndelius_version }}-EU.zip'
+
+- name: Unzip - file transfer
+  become: yes
+  become_user: "oracle"
+  unarchive:
+    mode: 0770
+    owner: oracle
+    remote_src: yes
+    dest: '/u01/software/EIS/filetransfer'
+    src: '/u01/software/EIS/NDelius-DSS-FileTransfer-{{ ndelius_version }}-FT.zip'
+
+- name: Unzip - file importer
+  become: yes
+  become_user: "oracle"
+  unarchive:
+    mode: 0770
+    owner: oracle
+    remote_src: yes
+    dest: '/u01/software/EIS/fileimporter'
+    src: '/u01/software/EIS/NDelius-DSS-FileImporter-{{ ndelius_version }}-FI.zip'
+
+- name: fix permissions - fi
+  file:
+    path: /u01/software/EIS/fileimporter
+    owner: oracle
+    group: oracle
+    recurse: yes
+
+- name: fix permissions - ft
+  file:
+    path: /u01/software/EIS/filetransfer
+    owner: oracle
+    group: oracle
+    recurse: yes
+
+- name: fix permissions - offloc
+  file:
+    path: /u01/software/EIS/offloc
+    owner: oracle
+    group: oracle
+    recurse: yes
+
+- name: Check for bad name - stat '$fileimporter'
+  stat: path=/u01/software/EIS/fileimporter/$fileimporter.jar
+  register: fi_dollar
+
+- name: Rename fileimporter - remove dollar sign
+  command: mv /u01/software/EIS/fileimporter/$fileimporter.jar /u01/software/EIS/fileimporter/fileimporter.jar
+  when: fi_dollar.stat.exists
+
+- name: Copy DSSWebService.properties & FileImporter.properties
+  become: yes
+  become_user: "oracle"
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+  with_items:
+    - { src: 'DSSWebService.properties.j2',
+        dest: '/u01/software/EIS/offloc/DSSWebService.properties.template',
+        mode: '0640',
+        owner: "oracle",
+        group: "oracle" }
+    - { src: 'FileImporter.properties.j2',
+        dest: '/u01/software/EIS/fileimporter/resource/FileImporter.properties',
+        mode: '0640',
+        owner: "oracle",
+        group: "oracle" }
+    - { src: 'FileTransfer.properties.j2',
+        dest: '/u01/software/EIS/filetransfer/resource/FileTransfer.properties',
+        mode: '0640',
+        owner: "oracle",
+        group: "oracle" }
+    - { src: 'encryption.properties.j2',
+        dest: '/u01/software/EIS/encryptionutility/resource/encryption.properties',
+        mode: '0640',
+        owner: "oracle",
+        group: "oracle" }
+    - { src: 'HMPSServerDetails.properties.j2',
+        dest: '/u01/software/EIS/offloc/HMPSServerDetails.properties.template',
+        mode: '0640',
+        owner: "oracle",
+        group: "oracle" }
+
+#params: input file, output of encrypted file, output key to decrypt
+- name: Encrypt DSSWebService.properties
+  become: yes
+  become_user: "oracle"
+  shell: |
+    . ~/.bash_profile &&
+    cd /u01/software/EIS/encryptionutility &&
+    java -cp ./*:lib/*:encryptionutility.jar:resource uk.co.bconline.ndelius.dss.common.impl.CredentialsGenerator /u01/software/EIS/offloc/DSSWebService.properties.template /u01/software/EIS/offloc/DSSWebService.properties /u01/software/EIS/offloc/DSSWebService.keyfile
+
+#params: input file, output of encrypted file, output key to decrypt
+- name: Encrypt HMPSServerDetails.properties
+  become: yes
+  become_user: "oracle"
+  shell: |
+    . ~/.bash_profile &&
+    cd /u01/software/EIS/encryptionutility &&
+    java -cp ./*:lib/*:encryptionutility.jar:resource uk.co.bconline.ndelius.dss.common.impl.CredentialsGenerator /u01/software/EIS/offloc/HMPSServerDetails.properties.template /u01/software/EIS/offloc/HMPSServerDetails.properties /u01/software/EIS/offloc/HMPSServerDetails.keyfile
+
+- name: Run offloc file transfer
+  become: yes
+  become_user: "oracle"
+  shell: |
+    . ~/.bash_profile && cd /u01/software/EIS/filetransfer && java -cp filetransfer.jar:resource uk.co.bconline.ndelius.dss.filetransfer.FileTransfer
+
+##Normally this task is called by the file importer.
+#- name: Run offloc file importer
+#  become: yes
+#  become_user: "oracle"
+#  shell: |
+#    . ~/.bash_profile &&
+#    cd /u01/software/EIS/fileimporter &&
+#    java -cp fileimporter.jar:resource uk.co.bconline.ndelius.dss.fileimporter.FileImporter

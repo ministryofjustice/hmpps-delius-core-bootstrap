@@ -1,0 +1,6 @@
+- hosts: wli-offloc
+  become: true
+  become_user: root
+  become_method: sudo
+  roles:
+    - { role: delius-dss-standalone }

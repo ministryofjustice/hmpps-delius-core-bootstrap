@@ -1,0 +1,5 @@
+---
+# tasks file for delius-interfaces
+
+- name: Deploy dss standalone application
+  include: deploy_dss_standalone.yml
