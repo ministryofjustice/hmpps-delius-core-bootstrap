@@ -46,18 +46,18 @@ def endOfScriptRun():
     print 'Done executing the script.'
 
 
-def createRole(name, required_group):
-    cd("/SecurityConfiguration/" + domName + "/Realms/myrealm/RoleMappers/XACMLRoleMapper")
+def createUser(username):
+    cd("/SecurityConfiguration/" + domName + "/Realms/myrealm/AuthenticationProviders/DefaultAuthenticator")
     try:
-        print "creating " + name + " role..."
-        cmo.createRole(None, name, None, "")
-        cmo.setRoleExpression(None, name, "Grp(" + required_group + ")")
+        print "creating user " + username + "..."
+        cmo.createUser(username, "Password1", "Test user")
     except weblogic.management.utils.AlreadyExistsException,ae:
         pass
 
 
 try:
     initConfigToScriptRun()
-    createRole("SPG_Security_Role", "SPG-Group")
+    for i in range(1, 100):
+        createUser('NDelius' + ('%02d' % i))
 finally:
     endOfScriptRun()

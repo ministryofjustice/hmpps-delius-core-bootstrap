@@ -2,29 +2,36 @@
 
 - name: Copy domain.properties
   template:
-    src: 'domain.properties.j2'
-    dest: '/u01/software/domain.properties'
-    mode: '0644'
-    owner: "oracle"
-    group: "oinstall"
+    src: domain.properties.j2
+    dest: /u01/software/domain.properties
+    mode: 0644
+    owner: oracle
+    group: oinstall
 
 - name: Copy scripts
   copy:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    mode: "{{ item.mode }}"
-    owner: "{{ item.owner }}"
-    group: "{{ item.group }}"
+    src: 'scripts/{{ item.file }}'
+    dest: '/u01/software/{{ item.file }}'
+    mode: 0644
+    owner: oracle
+    group: oinstall
   with_items:
-     - { src: 'scripts/setup_security_realm.py', dest: '/u01/software/setup_security_realm.py', mode: '0755', owner: "oracle", group: "oinstall" }
-     - { src: 'scripts/setup_roles.py', dest: '/u01/software/setup_roles.py', mode: '0755', owner: "oracle", group: "oinstall" }
+     - { file: setup_security_realm.py }
+     - { file: setup_roles.py }
+     - { file: create_test_users.py }
 
 - name: Create security realm
   shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/setup_security_realm.py'
   become: yes
-  become_user: "oracle"
+  become_user: oracle
 
 - name: Create global roles
   shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/setup_roles.py'
   become: yes
-  become_user: "oracle"
+  become_user: oracle
+
+- name: Create test users
+  when: oid_host is not defined
+  shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/create_test_users.py'
+  become: yes
+  become_user: oracle
