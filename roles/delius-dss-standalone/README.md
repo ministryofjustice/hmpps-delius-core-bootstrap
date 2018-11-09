@@ -1,4 +1,4 @@
-delius-interfaces
+delius-interfaces-offloc standalone
 =========
 
 Deploy the Delius DSS Standalone components for offloc.
