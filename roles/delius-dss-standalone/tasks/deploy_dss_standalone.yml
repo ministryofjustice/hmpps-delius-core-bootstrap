@@ -1,7 +1,7 @@
 ---
 
 - name: Create directories
-  shell: 'cd /u01/software/EIS && mkdir -p EIS offloc fileimporter filetransfer encryptionutility encryptionutility/resource'
+  shell: 'mkdir -p /u01/software/EIS && cd /u01/software/EIS && mkdir -p EIS offloc fileimporter filetransfer encryptionutility encryptionutility/resource'
   become: yes
   become_user: "oracle"
 
