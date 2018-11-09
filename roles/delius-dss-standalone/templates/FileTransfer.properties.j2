@@ -14,7 +14,7 @@ pnomis.file.extension=dat
 
 # Extension of the LIDS zip entry within the OFFLOC file 
 # *** N.B. this MUST be commented out if the OFFLOC file does not contain a LIDS data file otherwise the application will terminate immediately ***
-lids.file.extension=ped
+#lids.file.extension=ped
 
 # Path specifying the local file system location where the consolidated prison file should be created.
 consolidated.prison.file.path=/u01/software/EIS/offloc/consolidated_prison_file.xml
@@ -32,7 +32,7 @@ encryption.initialisation.vector=K<[}-+29i=/.,;'#
 offloc.testing.autocorrect=false
 
 #Location of WinZip command line executable
-winzip.path="/usr/bin/unzip"
+winzip.path=/usr/bin/unzip
 
 # TEST MODE CONFIGURATION
 
@@ -43,4 +43,4 @@ winzip.path="/usr/bin/unzip"
 #test.offloc.file.path=D:/DSSRun/ACL/files/offloc_file/testfile/offloc_TEST.zip
 
 # Switch between using WinZip command line (Default) or Native Java ZipFile.  
-#use.java.zipfile=false
+use.java.zipfile=true

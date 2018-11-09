@@ -1,7 +1,9 @@
 ---
 
 - name: Create directories
-  shell: 'mkdir -p /u01/software/EIS && cd /u01/software/EIS && mkdir -p EIS offloc fileimporter filetransfer encryptionutility encryptionutility/resource'
+  shell: 'mkdir -p /u01/software/EIS &&
+  cd /u01/software/EIS &&
+  mkdir -p EIS offloc fileimporter filetransfer encryptionutility encryptionutility/resource'
   become: yes
   become_user: "oracle"
 
@@ -147,11 +149,18 @@
     cd /u01/software/EIS/encryptionutility &&
     java -cp ./*:lib/*:encryptionutility.jar:resource uk.co.bconline.ndelius.dss.common.impl.CredentialsGenerator /u01/software/EIS/offloc/HMPSServerDetails.properties.template /u01/software/EIS/offloc/HMPSServerDetails.properties /u01/software/EIS/offloc/HMPSServerDetails.keyfile
 
+#- name: Limit file/folder permissions on whole EIS
+#  become: yes
+#  become_user: "oracle"
+#  shell: 'chmod 770 -R /u01/software/EIS/'
+
 - name: Run offloc file transfer
   become: yes
   become_user: "oracle"
   shell: |
-    . ~/.bash_profile && cd /u01/software/EIS/filetransfer && java -cp filetransfer.jar:resource uk.co.bconline.ndelius.dss.filetransfer.FileTransfer
+    cd /u01/software/EIS/filetransfer && java -cp filetransfer.jar:resource uk.co.bconline.ndelius.dss.filetransfer.FileTransfer
+  register: offloc_result
+  failed_when: "'FATAL' in offloc_result.stdout"
 
 ##Normally this task is called by the file importer.
 #- name: Run offloc file importer
