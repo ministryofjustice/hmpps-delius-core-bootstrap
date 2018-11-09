@@ -77,8 +77,9 @@ This playbook can run prior to the install of the below dependencies but will no
 Playbook
 -----------
 For development environment example with release 4.1.7.1 of nDelius: 
-* ansible-playbook -i inventory/dev wli-offloc.yml --extra-vars ndelius_version=4.1.7.1
-
+```bash
+ansible-playbook -i inventory/dev wli-offloc.yml --extra-vars ndelius_version=4.1.7.1
+```
 License
 -------
 
