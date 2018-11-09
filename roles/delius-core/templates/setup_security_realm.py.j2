@@ -166,7 +166,7 @@ def create_RoleMapper(path, beanName):
         pass
 
 def setAttributesFor_OIDAuthenticator():
-    cd("/SecurityConfiguration/NDelius/Realms/myrealm/AuthenticationProviders/OIDAuthenticator")
+    cd("/SecurityConfiguration/" + domName + "/Realms/myrealm/AuthenticationProviders/OIDAuthenticator")
     print "setting attributes for mbean type OracleInternetDirectoryAuthenticator"
     set("Principal", oidPrincipal)
     set("Host", oidHost)
@@ -176,25 +176,35 @@ def setAttributesFor_OIDAuthenticator():
     set("Port", oidPort)
     set("GroupBaseDN", oidGroupBaseDN)
 
+def setAttributesFor_DefaultAuthenticator():
+    cd("/SecurityConfiguration/" + domName + "/Realms/myrealm/AuthenticationProviders/DefaultAuthenticator")
+    print "setting attributes for mbean type DefaultAuthenticator"
+    set("ControlFlag", "OPTIONAL")
+
 def setAttributesFor_DefaultIdentityAsserter():
-    cd("/SecurityConfiguration/NDelius/Realms/myrealm/AuthenticationProviders/DefaultIdentityAsserter")
+    cd("/SecurityConfiguration/" + domName + "/Realms/myrealm/AuthenticationProviders/DefaultIdentityAsserter")
     print "setting attributes for mbean type DefaultIdentityAsserter"
     set("ActiveTypes", jarray.array(["AuthenticatedUser"], String))
 
 try:
     initConfigToScriptRun()
     startTransaction()
-    create_Realm("/SecurityConfiguration/NDelius", "myrealm")
-    create_Authorizer("/SecurityConfiguration/NDelius/Realms/myrealm", "XACMLAuthorizer")
-    create_Adjudicator("/SecurityConfiguration/NDelius/Realms/myrealm", "DefaultAdjudicator")
-    create_AuthenticationProvider("/SecurityConfiguration/NDelius/Realms/myrealm", "DefaultAuthenticator")
-    create_AuthenticationProvider("/SecurityConfiguration/NDelius/Realms/myrealm", "DefaultIdentityAsserter")
-    # create_OIDAuthenticationProvider("/SecurityConfiguration/NDelius/Realms/myrealm", "OIDAuthenticator")
-    create_CertPathProvider("/SecurityConfiguration/NDelius/Realms/myrealm", "WebLogicCertPathProvider")
-    create_CredentialMapper("/SecurityConfiguration/NDelius/Realms/myrealm", "DefaultCredentialMapper")
-    create_RoleMapper("/SecurityConfiguration/NDelius/Realms/myrealm", "XACMLRoleMapper")
+    create_Realm("/SecurityConfiguration/" + domName, "myrealm")
+    create_Authorizer("/SecurityConfiguration/" + domName + "/Realms/myrealm", "XACMLAuthorizer")
+    create_Adjudicator("/SecurityConfiguration/" + domName + "/Realms/myrealm", "DefaultAdjudicator")
+    create_AuthenticationProvider("/SecurityConfiguration/" + domName + "/Realms/myrealm", "DefaultAuthenticator")
+    create_AuthenticationProvider("/SecurityConfiguration/" + domName + "/Realms/myrealm", "DefaultIdentityAsserter")
+{% if oid_host is defined %}
+    create_OIDAuthenticationProvider("/SecurityConfiguration/" + domName + "/Realms/myrealm", "OIDAuthenticator")
+{% endif %}
+    create_CertPathProvider("/SecurityConfiguration/" + domName + "/Realms/myrealm", "WebLogicCertPathProvider")
+    create_CredentialMapper("/SecurityConfiguration/" + domName + "/Realms/myrealm", "DefaultCredentialMapper")
+    create_RoleMapper("/SecurityConfiguration/" + domName + "/Realms/myrealm", "XACMLRoleMapper")
     setAttributesFor_DefaultIdentityAsserter()
-    # setAttributesFor_OIDAuthenticator()
+    setAttributesFor_DefaultAuthenticator()
+{% if oid_host is defined %}
+    setAttributesFor_OIDAuthenticator()
+{% endif %}
     endTransaction()
 finally:
     endOfScriptRun()
