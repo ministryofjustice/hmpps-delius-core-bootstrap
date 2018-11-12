@@ -2,11 +2,14 @@
 
 - name: Copy domain.properties
   template:
-    src: domain.properties.j2
-    dest: /u01/software/domain.properties
+    src: '{{ item.file }}.j2'
+    dest: '/u01/software/{{ item.file }}'
     mode: 0644
     owner: oracle
     group: oinstall
+  with_items:
+     - { file: domain.properties }
+     - { file: setup_security_realm.py }
 
 - name: Copy scripts
   copy:
@@ -16,7 +19,6 @@
     owner: oracle
     group: oinstall
   with_items:
-     - { file: setup_security_realm.py }
      - { file: setup_roles.py }
      - { file: create_test_users.py }
 
