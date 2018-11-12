@@ -11,10 +11,10 @@ database_port: 1521
 database_sid: DNDA
 database_password: NDelius1
 
-oid_port: 3060
-oid_base: dc=mojaws,dc=internal
-oid_principal: cn=orcladmin
-oid_password: oradir1
+oid_port: 10389
+oid_base: dc=moj,dc=com
+oid_principal: uid=admin,ou=system
+oid_password: secret
 oid_passfile: /u01/app/oracle/middleware/user_projects/domains/{{ domain_name }}/password.keyfile
 
 ndelius_display_name: National Delius
