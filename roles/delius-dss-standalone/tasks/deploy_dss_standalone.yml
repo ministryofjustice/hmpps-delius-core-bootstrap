@@ -3,7 +3,7 @@
 - name: Create directories
   shell: 'mkdir -p /u01/software/EIS &&
   cd /u01/software/EIS &&
-  mkdir -p EIS offloc fileimporter filetransfer encryptionutility encryptionutility/resource'
+  mkdir -p offloc fileimporter filetransfer encryptionutility encryptionutility/resource'
   become: yes
   become_user: "oracle"
 
@@ -162,11 +162,13 @@
   register: offloc_result
   failed_when: "'FATAL' in offloc_result.stdout"
 
-##Normally this task is called by the file importer.
-#- name: Run offloc file importer
-#  become: yes
-#  become_user: "oracle"
-#  shell: |
-#    . ~/.bash_profile &&
-#    cd /u01/software/EIS/fileimporter &&
-#    java -cp fileimporter.jar:resource uk.co.bconline.ndelius.dss.fileimporter.FileImporter
+##Normally this task is called by the file importer parent bat or sh script
+- name: Run offloc file importer
+  become: yes
+  become_user: "oracle"
+  shell: |
+    . ~/.bash_profile &&
+    cd /u01/software/EIS/fileimporter &&
+    java -cp fileimporter.jar:resource uk.co.bconline.ndelius.dss.fileimporter.FileImporter
+  register: offloc2_result
+  failed_when: "'FATAL' in offloc2_result.stdout"
