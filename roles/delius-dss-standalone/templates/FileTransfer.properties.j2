@@ -26,7 +26,7 @@ file.importer.deployment.directory=/u01/software/EIS/fileimporter
 file.importer.startup.command=cd /u01/software/EIS/fileimporter && java -Xms256m -Xmx512m -cp fileimporter.jar:resource uk.co.bconline.ndelius.dss.fileimporter.FileImporter
 
 # 16 byte encryption IV. (this will be used when reading the encrypted HMPS server resource bundle and MUST match the IV used during encryption. 
-encryption.initialisation.vector=K<[}-+29i=/.,;'#
+encryption.initialisation.vector={{ encryptionIV }}
 
 #Attempt to auto correct files
 offloc.testing.autocorrect=false

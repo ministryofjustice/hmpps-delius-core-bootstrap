@@ -1,5 +1,10 @@
 ---
 
+- name: Set IV
+  set_fact:
+    encryptionIV: "{{ encryptionIV }}"
+    cacheable: true
+
 - name: Create directories
   shell: 'mkdir -p /u01/software/EIS &&
   cd /u01/software/EIS &&
@@ -101,35 +106,25 @@
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    mode: "{{ item.mode }}"
-    owner: "{{ item.owner }}"
-    group: "{{ item.group }}"
+    mode: "0640"
+    owner: "oracle"
+    group: "oinstall"
   with_items:
     - { src: 'DSSWebService.properties.j2',
-        dest: '/u01/software/EIS/offloc/DSSWebService.properties.template',
-        mode: '0640',
-        owner: "oracle",
-        group: "oracle" }
+        dest: '/u01/software/EIS/offloc/DSSWebService.properties.template'
+      }
     - { src: 'FileImporter.properties.j2',
-        dest: '/u01/software/EIS/fileimporter/resource/FileImporter.properties',
-        mode: '0640',
-        owner: "oracle",
-        group: "oracle" }
+        dest: '/u01/software/EIS/fileimporter/resource/FileImporter.properties'
+      }
     - { src: 'FileTransfer.properties.j2',
-        dest: '/u01/software/EIS/filetransfer/resource/FileTransfer.properties',
-        mode: '0640',
-        owner: "oracle",
-        group: "oracle" }
+        dest: '/u01/software/EIS/filetransfer/resource/FileTransfer.properties'
+      }
     - { src: 'encryption.properties.j2',
-        dest: '/u01/software/EIS/encryptionutility/resource/encryption.properties',
-        mode: '0640',
-        owner: "oracle",
-        group: "oracle" }
+        dest: '/u01/software/EIS/encryptionutility/resource/encryption.properties'
+      }
     - { src: 'HMPSServerDetails.properties.j2',
-        dest: '/u01/software/EIS/offloc/HMPSServerDetails.properties.template',
-        mode: '0640',
-        owner: "oracle",
-        group: "oracle" }
+        dest: '/u01/software/EIS/offloc/HMPSServerDetails.properties.template'
+      }
 
 #params: input file, output of encrypted file, output key to decrypt
 - name: Encrypt DSSWebService.properties
