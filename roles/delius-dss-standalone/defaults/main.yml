@@ -1,1 +1,5 @@
-server_name: AdminServer
+  offlocUsername: "DSS-User"
+  offlocPassword: "Password1"
+  encryptionIV: "{{ (inventory_hostname | to_uuid | password_hash('sha512'))[:16] }}"
+  ndeliusDSSUsername: "DSS-User"
+  ndeliusDSSPassword: "Password1"
