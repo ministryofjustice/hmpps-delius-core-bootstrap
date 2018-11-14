@@ -3,7 +3,7 @@ activemq_systemUsage_memory: 134217728
 activemq_systemUsage_store: 10737418240
 activemq_systemUsage_temp: 5368709120
 activemq_message_verification: false
-activemq_externalClientConnector: tcp://spg:61617
+activemq_externalClientConnector: tcp://{{ ansible_hostname }}:61617
 activemq_remoteCF_brokerURL: tcp://spg:61616
 activemq_remoteCF_username:
 activemq_remoteCF_password:
