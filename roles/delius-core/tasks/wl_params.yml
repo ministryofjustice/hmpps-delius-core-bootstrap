@@ -6,3 +6,9 @@
     path: '/u01/app/oracle/middleware/user_projects/domains/{{ domain_name }}/bin/setDomainEnv.sh'
     regexp: '"-Xms(.+) -Xmx(.+)"'
     replace: '"{{ jvm_mem_args }}"'
+
+- name: Update setDomainEnv for GC
+  lineinfile:
+    path:         '/u01/app/oracle/middleware/user_projects/domains/{{ domain_name }}/bin/setDomainEnv.sh'
+    insertbefore: '^JAVA_OPTIONS="\$\{JAVA_OPTIONS\}"'
+    line:         'JAVA_OPTIONS="${JAVA_OPTIONS} -XX:+UseG1GC "'
