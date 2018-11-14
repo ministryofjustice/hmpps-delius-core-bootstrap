@@ -4,9 +4,9 @@ activemq_systemUsage_store: 10737418240
 activemq_systemUsage_temp: 5368709120
 activemq_message_verification: false
 activemq_externalClientConnector: tcp://{{ ansible_hostname }}:61617
-activemq_remoteCF_brokerURL: tcp://spg:61616
-activemq_remoteCF_username:
-activemq_remoteCF_password:
+activemq_remoteCF_brokerURL: tcp://{{ spg_host }}:61616
+activemq_remoteCF_username: spgsmx
+activemq_remoteCF_password: spgsmx1000000
 activemq_bridge_outboundQueueName: nDeliusInboundQueue
 activemq_systemUsage_memory_third: 44040192
 activemq_keystore_filepath:
