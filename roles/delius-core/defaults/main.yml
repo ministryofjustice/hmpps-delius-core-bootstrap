@@ -1,15 +1,11 @@
-server_name: AdminServer
-server_params: -Xms2048m -Xmx2048m -XX:MaxPermSize=256m
-server_username: weblogic
-server_password: webl0gic
-server_listen_address: 0.0.0.0
-server_listen_port: 7001
-
 jvm_mem_args: -Xms2g -Xmx2g
 
 database_port: 1521
 database_sid: DNDA
 database_password: NDelius1
+
+alfresco_port: 80
+alfresco_office_port: 443
 
 oid_port: 10389
 oid_base: dc=moj,dc=com
