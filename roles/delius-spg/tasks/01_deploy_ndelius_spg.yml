@@ -90,11 +90,11 @@
   with_items:
     - { file: deploy.py }
 
-- name: Update setDomainEnv for GC & jaas
+- name: Update setDomainEnv for jaas
   lineinfile:
     path:         '/u01/app/oracle/middleware/user_projects/domains/{{ domain_name }}/bin/setDomainEnv.sh'
     insertbefore: '^JAVA_OPTIONS="\$\{JAVA_OPTIONS\}"'
-    line:         'JAVA_OPTIONS="${JAVA_OPTIONS} -Djava.security.auth.login.config=jaas.config -XX:+UseG1GC "'
+    line:         'JAVA_OPTIONS="${JAVA_OPTIONS} -Djava.security.auth.login.config=jaas.config "'
 
 - name: Apply ActiveMQ Properties
   shell: '. ~/.bash_profile &&
