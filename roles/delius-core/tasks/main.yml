@@ -7,8 +7,8 @@
 - name: Setup security realm
   include: security_realm.yml
 
-- name: Setup datasources
-  include: datasources.yml
+# - name: Setup datasources
+#   include: datasources.yml
 
 # - name: Apply NDelius configuration
 #   include: nd_config.yml
