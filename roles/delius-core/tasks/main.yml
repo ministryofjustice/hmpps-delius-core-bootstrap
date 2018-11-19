@@ -4,9 +4,9 @@
 - name: Set WebLogic startup params
   include: wl_params.yml
 
-# - name: Setup security realm
-#   include: security_realm.yml
-#
+- name: Setup security realm
+  include: security_realm.yml
+
 # - name: Setup datasources
 #   include: datasources.yml
 #
