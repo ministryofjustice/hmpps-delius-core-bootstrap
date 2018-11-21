@@ -17,8 +17,8 @@
   include: deploy_ndelius.yml
 
 - name: Start weblogic
-    become: yes
-    systemd:
-      name: weblogic.service
-      state: restarted
-      enabled: yes
+  become: yes
+  systemd:
+    name: weblogic.service
+    state: restarted
+    enabled: yes
