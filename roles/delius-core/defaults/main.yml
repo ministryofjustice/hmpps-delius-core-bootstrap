@@ -6,6 +6,8 @@ server_password: webl0gic
 server_listen_address: 0.0.0.0
 server_listen_port: 7001
 
+setup_datasources: true
+
 jvm_mem_args: -Xms2g -Xmx2g
 
 database_port: 1521
