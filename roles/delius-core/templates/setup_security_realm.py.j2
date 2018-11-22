@@ -170,7 +170,7 @@ def setAttributesFor_OIDAuthenticator():
     print "setting attributes for mbean type OracleInternetDirectoryAuthenticator"
     set("Principal", oidPrincipal)
     set("Host", oidHost)
-    set("Credential", os.environ['oid_password'])
+    set("Credential", os.environ['ldap_admin_password'])
     set("ControlFlag", "SUFFICIENT")
     set("UserBaseDN", oidUserBaseDN)
     set("Port", oidPort)
