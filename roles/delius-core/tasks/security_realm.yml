@@ -25,7 +25,7 @@
 - name: Create security realm
   shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/setup_security_realm.py'
   environment:
-    weblogic_admin_password: '{{ weblogic_admin_username }}'
+    weblogic_admin_password: '{{ weblogic_admin_password }}'
     oid_passsword: '{{ oid_passsword }}'
   become: yes
   become_user: oracle
@@ -33,7 +33,7 @@
 - name: Create global roles
   shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/setup_roles.py'
   environment:
-    weblogic_admin_password: '{{ weblogic_admin_username }}'
+    weblogic_admin_password: '{{ weblogic_admin_password }}'
   become: yes
   become_user: oracle
 
@@ -41,6 +41,6 @@
   when: oid_host is not defined
   shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/create_test_users.py'
   environment:
-    weblogic_admin_password: '{{ weblogic_admin_username }}'
+    weblogic_admin_password: '{{ weblogic_admin_password }}'
   become: yes
   become_user: oracle
