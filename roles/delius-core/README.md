@@ -16,7 +16,7 @@ See the list of variable defaults in [defaults/main.yml](defaults/main.yml). Add
 ```yaml
 dependencies_s3_bucket: S3 bucket name, local filesystem will be used if not specified
 database_host: Database hostname
-oid_host: LDAP hostname, app will run in test mode if this is not specified
+ldap_host: LDAP hostname, app will run in test mode if this is not specified
 ndelius_display_name: NDelius display name for homepage
 ndelius_training_mode: development/training/production
 ndelius_log_level: Log level eg. TRACE/DEBUG/INFO/WARN/ERROR

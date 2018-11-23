@@ -109,13 +109,13 @@ def create_AuthenticationProvider(path, beanName):
     except java.lang.reflect.UndeclaredThrowableException,udt:
         pass
 
-def create_OIDAuthenticationProvider(path, beanName):
+def create_LDAPAuthenticationProvider(path, beanName):
     cd(path)
     try:
         print "creating mbean of type OracleInternetDirectoryAuthenticator ... "
         theBean = cmo.lookupAuthenticationProvider(beanName)
         if theBean == None:
-            cmo.createAuthenticationProvider("OIDAuthenticator","weblogic.security.providers.authentication.OracleInternetDirectoryAuthenticator")
+            cmo.createAuthenticationProvider("LDAPAuthenticator","weblogic.security.providers.authentication.OracleInternetDirectoryAuthenticator")
     except java.lang.UnsupportedOperationException, usoe:
         pass
     except weblogic.descriptor.BeanAlreadyExistsException,bae:
@@ -165,16 +165,16 @@ def create_RoleMapper(path, beanName):
     except java.lang.reflect.UndeclaredThrowableException,udt:
         pass
 
-def setAttributesFor_OIDAuthenticator():
-    cd("/SecurityConfiguration/" + domName + "/Realms/myrealm/AuthenticationProviders/OIDAuthenticator")
+def setAttributesFor_LDAPAuthenticator():
+    cd("/SecurityConfiguration/" + domName + "/Realms/myrealm/AuthenticationProviders/LDAPAuthenticator")
     print "setting attributes for mbean type OracleInternetDirectoryAuthenticator"
-    set("Principal", oidPrincipal)
-    set("Host", oidHost)
-    set("Credential", os.environ['ldap_admin_password'])
     set("ControlFlag", "SUFFICIENT")
-    set("UserBaseDN", oidUserBaseDN)
-    set("Port", oidPort)
-    set("GroupBaseDN", oidGroupBaseDN)
+    set("Principal", ldapPrincipal)
+    set("Credential", os.environ['ldap_admin_password'])
+    set("Host", ldapHost)
+    set("Port", ldapPort)
+    set("UserBaseDN", ldapUserBaseDN)
+    set("GroupBaseDN", ldapGroupBaseDN)
 
 def setAttributesFor_DefaultAuthenticator():
     cd("/SecurityConfiguration/" + domName + "/Realms/myrealm/AuthenticationProviders/DefaultAuthenticator")
@@ -194,16 +194,16 @@ try:
     create_Adjudicator("/SecurityConfiguration/" + domName + "/Realms/myrealm", "DefaultAdjudicator")
     create_AuthenticationProvider("/SecurityConfiguration/" + domName + "/Realms/myrealm", "DefaultAuthenticator")
     create_AuthenticationProvider("/SecurityConfiguration/" + domName + "/Realms/myrealm", "DefaultIdentityAsserter")
-{% if oid_host is defined %}
-    create_OIDAuthenticationProvider("/SecurityConfiguration/" + domName + "/Realms/myrealm", "OIDAuthenticator")
+{% if ldap_host is defined %}
+    create_LDAPAuthenticationProvider("/SecurityConfiguration/" + domName + "/Realms/myrealm", "LDAPAuthenticator")
 {% endif %}
     create_CertPathProvider("/SecurityConfiguration/" + domName + "/Realms/myrealm", "WebLogicCertPathProvider")
     create_CredentialMapper("/SecurityConfiguration/" + domName + "/Realms/myrealm", "DefaultCredentialMapper")
     create_RoleMapper("/SecurityConfiguration/" + domName + "/Realms/myrealm", "XACMLRoleMapper")
     setAttributesFor_DefaultIdentityAsserter()
     setAttributesFor_DefaultAuthenticator()
-{% if oid_host is defined %}
-    setAttributesFor_OIDAuthenticator()
+{% if ldap_host is defined %}
+    setAttributesFor_LDAPAuthenticator()
 {% endif %}
     endTransaction()
 finally:

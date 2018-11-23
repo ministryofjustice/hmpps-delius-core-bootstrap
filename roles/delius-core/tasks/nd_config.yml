@@ -34,7 +34,7 @@
 
 - name: Write password.keyfile
   shell: '. ~/.bash_profile &&
-    printf "username={{ oid_principal }}\npassword=${ldap_admin_password}" >> {{ oid_passfile }}'
+    printf "username={{ ldap_principal }}\npassword=${ldap_admin_password}" >> {{ ldap_passfile }}'
   environment:
     ldap_admin_password: '{{ ldap_admin_password }}'
   become: yes

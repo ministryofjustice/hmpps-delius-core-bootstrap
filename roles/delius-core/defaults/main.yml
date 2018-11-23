@@ -6,10 +6,9 @@ weblogic_admin_password: webl0gic
 server_listen_address: 0.0.0.0
 server_listen_port: 7001
 
-setup_datasources: true
-
 jvm_mem_args: -Xms2g -Xmx2g
 
+setup_datasources: true
 database_port: 1521
 database_sid: DNDA
 database_password: NDelius1
@@ -17,11 +16,13 @@ database_password: NDelius1
 alfresco_port: 80
 alfresco_office_port: 443
 
-oid_port: 10389
-oid_base: dc=moj,dc=com
-oid_principal: uid=admin,ou=system
+ldap_port: 10389
+ldap_principal: uid=admin,ou=system
 ldap_admin_password: secret
-oid_passfile: /u01/app/oracle/middleware/user_projects/domains/{{ domain_name }}/password.keyfile
+ldap_base: dc=moj,dc=com
+ldap_user_base: cn=Users,{{ ldap_base }}
+ldap_group_base: cn=EISUsers,{{ ldap_user_base }}
+ldap_passfile: /u01/app/oracle/middleware/user_projects/domains/{{ domain_name }}/password.keyfile
 
 ndelius_display_name: National Delius
 ndelius_training_mode: production # development, training, production

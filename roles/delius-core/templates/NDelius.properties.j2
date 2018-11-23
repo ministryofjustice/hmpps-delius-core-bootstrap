@@ -1,12 +1,12 @@
 # User data store config
-{% if oid_host is defined %}
-LDAPURI=ldap://{{ oid_host }}:{{ oid_port }}
+{% if ldap_host is defined %}
+LDAPURI=ldap://{{ ldap_host }}:{{ ldap_port }}
 {% else %}
 LDAPURI=ldap://localhost:3060
 TEST_MODE=true
 {% endif %}
-PASSWORD_FILE={{ oid_passfile }}
-USER_CONTEXT=cn=Users,{{ oid_base }}
+PASSWORD_FILE={{ ldap_passfile }}
+USER_CONTEXT={{ ldap_user_base }}
 ND_USER_TYPE=NDUser
 ND_ROLE_TYPE=NDRole
 ND_ROLE_ASSOCIATION_TYPE=NDRoleAssociation

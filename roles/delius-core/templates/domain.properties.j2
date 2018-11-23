@@ -14,10 +14,10 @@ applicationDatabaseHost={{ database_host }}
 applicationDatabasePort={{ database_port }}
 applicationDatabaseSID={{ database_sid }}
 
-{% if oid_host is defined %}
-oidPrincipal={{ oid_principal }}
-oidHost={{ oid_host }}
-oidPort={{ oid_port }}
-oidUserBaseDN=cn=Users,{{ oid_base }}
-oidGroupBaseDN=cn=EISUsers,cn=Users,{{ oid_base }}
+{% if ldap_host is defined %}
+ldapPrincipal={{ ldap_principal }}
+ldapHost={{ ldap_host }}
+ldapPort={{ ldap_port }}
+ldapUserBaseDN={{ ldap_user_base }}
+ldapGroupBaseDN={{ ldap_group_base }}
 {% endif %}

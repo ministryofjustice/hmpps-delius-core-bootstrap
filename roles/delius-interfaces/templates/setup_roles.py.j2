@@ -60,7 +60,7 @@ def createRole(name, required_group):
     try:
         print "creating " + name + " role..."
         cmo.createRole(None, name, None, "")
-{% if oid_host is defined %}
+{% if ldap_host is defined %}
         cmo.setRoleExpression(None, name, "Grp(" + required_group + ")")
 {% else %}
         cmo.setRoleExpression(None, name, "?weblogic.entitlement.rules.UncheckedPolicy()")
