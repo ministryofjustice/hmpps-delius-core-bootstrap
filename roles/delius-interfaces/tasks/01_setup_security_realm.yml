@@ -13,5 +13,7 @@
 
 - name: Create roles/groups
   shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/setup_roles.py'
+  environment:
+    weblogic_admin_password: '{{ weblogic_admin_password }}'
   become: yes
   become_user: "oracle"
