@@ -6,15 +6,15 @@ weblogic_admin_password: webl0gic
 server_listen_address: 0.0.0.0
 server_listen_port: 7001
 
+remote_broker_url: tcp://{{ spg_host }}:61616
+remote_broker_username: spgsmx
+remote_broker_password: spgsmx1000000
 activemq_data_folder: activemq_data
 activemq_systemUsage_memory: 134217728
 activemq_systemUsage_store: 10737418240
 activemq_systemUsage_temp: 5368709120
 activemq_message_verification: false
 activemq_externalClientConnector: tcp://{{ ansible_hostname }}:61617
-activemq_remoteCF_brokerURL: tcp://{{ spg_host }}:61616
-activemq_remoteCF_username: spgsmx
-activemq_remoteCF_password: spgsmx1000000
 activemq_bridge_outboundQueueName: fromNdelius
 activemq_systemUsage_memory_third: 44040192
 activemq_keystore_filepath:
