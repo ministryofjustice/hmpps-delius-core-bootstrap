@@ -5,3 +5,5 @@ weblogic_admin_username: weblogic
 weblogic_admin_password: webl0gic
 server_listen_address: 0.0.0.0
 server_listen_port: 7001
+
+ldap_host: oid-wls-instance.dev.delius-core.probation.hmpps.dsd.io

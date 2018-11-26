@@ -6,6 +6,9 @@ weblogic_admin_password: webl0gic
 server_listen_address: 0.0.0.0
 server_listen_port: 7001
 
+ldap_host: oid-wls-instance.dev.delius-core.probation.hmpps.dsd.io
+spg_host: gw-int-direct.dev.delius-core.probation.hmpps.dsd.io
+
 remote_broker_url: tcp://{{ spg_host }}:61616
 remote_broker_username: spgsmx
 remote_broker_password: spgsmx1000000
