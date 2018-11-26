@@ -19,7 +19,9 @@ alfresco_office_port: 443
 ldap_port: 10389
 ldap_principal: uid=admin,ou=system
 ldap_admin_password: secret
-ldap_base: dc=moj,dc=com
+partition_id: "moj"
+
+ldap_base: dc={{ partition_id }},dc=com
 ldap_user_base: cn=Users,{{ ldap_base }}
 ldap_group_base: cn=EISUsers,{{ ldap_user_base }}
 ldap_passfile: /u01/app/oracle/middleware/user_projects/domains/{{ domain_name }}/password.keyfile
@@ -37,6 +39,7 @@ nomis_client_id: delius
 nomis_client_secret: ThisIsASecretKey
 
 s3_dependencies_bucket: tf-eu-west-2-hmpps-eng-dev-delius-core-dependencies-s3bucket
+
 database_host: delius-db.dev.delius-core.probation.hmpps.dsd.io
 alfresco_host: alfresco.dev.delius-core.probation.hmpps.dsd.io
 alfresco_office_host: alfresco.dev.delius-core.probation.hmpps.dsd.io
