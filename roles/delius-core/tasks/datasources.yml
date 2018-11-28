@@ -18,5 +18,8 @@
 
 - name: Create datasources
   shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/setup_datasources.py'
+  environment:
+    weblogic_admin_password: '{{ weblogic_admin_password }}'
+    database_password: '{{ database_password }}'
   become: yes
   become_user: "oracle"

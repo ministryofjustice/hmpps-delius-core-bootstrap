@@ -8,6 +8,7 @@
   include: security_realm.yml
 
 - name: Setup datasources
+  when: setup_datasources
   include: datasources.yml
 
 - name: Apply NDelius configuration
