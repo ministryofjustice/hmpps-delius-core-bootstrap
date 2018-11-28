@@ -2,3 +2,4 @@
 /.idea/
 /s3/
 /ansible.cfg
+env_configs/
