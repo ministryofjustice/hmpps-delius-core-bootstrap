@@ -49,6 +49,14 @@
     group: oinstall
     mode: 0755
 
+- name: Grab hostname of server for activemq broker-config
+  shell: hostname
+  register: hostname
+
+- name: Set client connector url for broker-config
+  set_fact:
+    activemq_externalClientConnector: "tcp://{{ hostname.stdout }}:61617"
+
 - name: Copy NDelius SPG Properties
   template:
     src: "{{ item.file }}.j2"
