@@ -148,3 +148,10 @@
       file: 'SPG/NDeliusSPG-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear',
       order: 101
     }
+
+- name: Restart weblogic
+  become: yes
+  systemd:
+    name: weblogic.service
+    state: restarted
+    enabled: yes
