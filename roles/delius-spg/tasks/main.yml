@@ -7,6 +7,14 @@
     group: oinstall
     mode: 0755
 
+- name: Create activemq data directory
+  file:
+    path: "{{ activemq_data_folder }}"
+    state: directory
+    owner: oracle
+    group: oinstall
+    mode: 0755
+
 - name: Download ActiveMQ application
   when: s3_dependencies_bucket is defined
   aws_s3:
