@@ -6,3 +6,10 @@
 
 - name: Deploy interfaces
   include: 02_deploy_interfaces.yml
+
+- name: Restart weblogic
+  become: yes
+  systemd:
+    name: weblogic.service
+    state: restarted
+    enabled: yes
