@@ -16,6 +16,7 @@ database_password: NDelius1
 alfresco_port: 80
 alfresco_office_port: 443
 
+ldap_readonly_host: {{ ldap_host }}
 ldap_port: 10389
 ldap_principal: uid=admin,ou=system
 ldap_admin_password: secret

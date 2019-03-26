@@ -1,6 +1,7 @@
 # User data store config
 {% if ldap_host is defined %}
-LDAPURI=ldap://{{ ldap_host }}:{{ ldap_port }}
+LDAPURI=ldap://{{ ldap_readonly_host }}:{{ ldap_port }}
+LDAPURI_WRITABLE=ldap://{{ ldap_host }}:{{ ldap_port }}
 {% else %}
 LDAPURI=ldap://localhost:3060
 TEST_MODE=true
