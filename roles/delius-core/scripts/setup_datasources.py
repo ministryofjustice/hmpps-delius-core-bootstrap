@@ -132,7 +132,7 @@ def setAttributes_JDBCDriverParams_NDELIUS_JTA():
     print "setting attributes for mbean type JDBCDriverParams"
     set("Password", os.environ['database_password'])
     set("DriverName", "oracle.jdbc.xa.client.OracleXADataSource")
-    set("Url", "jdbc:oracle:thin:@"+applicationDatabaseHost+":"+applicationDatabasePort+":"+applicationDatabaseSID)
+    set("Url", databaseURL)
 
 def setAttributes_JDBCOracleParams_NDELIUS():
     cd("/JDBCSystemResources/NDELIUS/JDBCResource/NDELIUS/JDBCOracleParams/NDELIUS")
@@ -161,7 +161,7 @@ def setAttributes_JDBCDriverParams_NDELIUS():
     print "setting attributes for mbean type JDBCDriverParams"
     set("Password", os.environ['database_password'])
     set("DriverName", "oracle.jdbc.OracleDriver")
-    set("Url", "jdbc:oracle:thin:@"+applicationDatabaseHost+":"+applicationDatabasePort+":"+applicationDatabaseSID)
+    set("Url", databaseURL)
 
 def setAttributes_JDBCConnectionPoolParams_NDELIUS_JTA():
     cd("/JDBCSystemResources/NDELIUS_JTA/JDBCResource/NDELIUS_JTA/JDBCConnectionPoolParams/NDELIUS_JTA")
