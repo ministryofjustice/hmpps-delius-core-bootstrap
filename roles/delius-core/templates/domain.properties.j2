@@ -10,9 +10,7 @@ TimeOut=240000
 startedNewServer=0
 domainDir=/u01/app/oracle/middleware/user_projects/domains/{{ domain_name }}
 
-applicationDatabaseHost={{ database_host }}
-applicationDatabasePort={{ database_port }}
-applicationDatabaseSID={{ database_sid }}
+databaseURL={{ database_url }}
 
 {% if ldap_host is defined %}
 ldapPrincipal={{ ldap_principal }}
