@@ -48,16 +48,16 @@
   become_user: "oracle"
   with_items:
     - {
-      name: 'NDeliusDSS-war-{{ ndelius_version | regex_replace("\.", "_") }}',
-      file: 'EIS/NDeliusDSS-war/NDeliusDSS-war-{{ ndelius_version }}.war'
+      name: 'NDeliusDSSNonSSL-war-{{ ndelius_version | regex_replace("\.", "_") }}',
+      file: 'EIS/NDeliusDSSNonSSL-war/NDeliusDSS-war-{{ ndelius_version }}.war'
     }
     - {
-      name: 'NDeliusIAPS-war-{{ ndelius_version | regex_replace("\.", "_") }}',
-      file: 'EIS/NDeliusIAPS-war/NDeliusIAPS-war-{{ ndelius_version }}.war'
+      name: 'NDeliusIAPSNonSSL-war-{{ ndelius_version | regex_replace("\.", "_") }}',
+      file: 'EIS/NDeliusIAPSNonSSL-war/NDeliusIAPSNonSSL-war-{{ ndelius_version }}.war'
     }
     - {
-      name: 'NDeliusOASYS-war-{{ ndelius_version | regex_replace("\.", "_") }}',
-      file: 'EIS/NDeliusOASYS-war/NDeliusOASYS-war-{{ ndelius_version }}.war'
+      name: 'NDeliusOASYSNonSSL-war-{{ ndelius_version | regex_replace("\.", "_") }}',
+      file: 'EIS/NDeliusOASYSNonSSL-war/NDeliusOASYSNonSSL-war-{{ ndelius_version }}.war'
     }
     - {
       name: 'NDelius-api-{{ ndelius_version | regex_replace("\.", "_") }}',
