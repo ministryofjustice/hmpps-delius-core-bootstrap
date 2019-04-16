@@ -8,6 +8,7 @@ TEST_MODE=true
 {% endif %}
 PASSWORD_FILE={{ ldap_passfile }}
 USER_CONTEXT={{ ldap_user_base }}
+EIS_USER_CONTEXT=cn=EISUsers,{{ ldap_user_base }}
 ND_USER_TYPE=NDUser
 ND_ROLE_TYPE=NDRole
 ND_ROLE_ASSOCIATION_TYPE=NDRoleAssociation
