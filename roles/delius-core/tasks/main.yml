@@ -3,7 +3,7 @@
 
 - name: (main) Debug vars
   debug:
-    msg: {{ vars | to_nice_json }}
+    msg: "{{ vars | to_nice_json }}"
     verbosity: 0
 
 - name: (main) Set WebLogic startup params
