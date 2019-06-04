@@ -1,5 +1,5 @@
 ---
-- name: Set JVM args
+- name: (main/wl_params) Set JVM args
   become: yes
   become_user: oracle
   replace:
@@ -7,7 +7,7 @@
     regexp: '"-Xms(.+) -Xmx(.+)"'
     replace: '"{{ jvm_mem_args }}"'
 
-- name: Update setDomainEnv for GC
+- name: (main/wl_params) Update setDomainEnv for GC
   lineinfile:
     path:         '/u01/app/oracle/middleware/user_projects/domains/{{ domain_name }}/bin/setDomainEnv.sh'
     insertbefore: '^JAVA_OPTIONS="\$\{JAVA_OPTIONS\}"'
