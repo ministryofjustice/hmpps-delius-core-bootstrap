@@ -12,7 +12,7 @@
     resource: "{{ instance_id }}"
     state: present
     tags:
-      ndelius_version: "Deploying"
+      ndelius_version: "Deploying - {{ ndelius_version }}"
 
 - name: (main) Set WebLogic startup params
   include: wl_params.yml
