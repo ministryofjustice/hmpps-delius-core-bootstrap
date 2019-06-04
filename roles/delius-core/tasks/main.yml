@@ -3,8 +3,16 @@
 
 - name: (main) Debug vars
   debug:
-    msg: "{{ vars | to_nice_json }}"
+    msg: "{{ vars }}"
     verbosity: 2
+
+- name: (main) set tag to indicate deployment
+  ec2_tag:
+    region: "{{ region }}"
+    resource: "{{ instance_id }}"
+    state: present
+    tags:
+      ndelius_version: "Deploying"
 
 - name: (main) Set WebLogic startup params
   include: wl_params.yml
