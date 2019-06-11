@@ -1,6 +1,6 @@
 ---
 
-- name: Download NDelius application
+- name: (main/deploy_ndelius) Download NDelius application
   when: s3_dependencies_bucket is defined
   aws_s3:
     bucket: "{{ s3_dependencies_bucket }}"
@@ -8,7 +8,7 @@
     dest: /u01/software/NDelius-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear
     mode: get
 
-- name: Copy local NDelius application
+- name: (main/deploy_ndelius) Copy local NDelius application
   when: s3_dependencies_bucket is not defined
   copy:
     src: s3/dependencies/delius-core/NDelius-{{ ndelius_version }}/NDelius-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear
@@ -17,7 +17,7 @@
     owner: oracle
     group: oinstall
 
-- name: Copy scripts
+- name: (main/deploy_ndelius) Copy scripts
   copy:
     src: scripts/deploy.py
     dest: /u01/software/deploy.py
@@ -25,7 +25,7 @@
     owner: oracle
     group: oinstall
 
-- name: Deploy application
+- name: (main/deploy_ndelius) Deploy application
   shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/deploy.py {{ item.name }} {{ item.file }} {{ item.order }}'
   environment:
     weblogic_admin_password: '{{ weblogic_admin_password }}'

@@ -1,13 +1,13 @@
 ---
 
-- name: Wait for database to be up
+- name: (main/datasources) Wait for database to be up
   wait_for:
     host: '{{ primary_db_host }}'
     port: 1521
     sleep: 30
     timeout: 7200
 
-- name: Copy domain.properties
+- name: (main/datasources) Copy domain.properties
   template:
     src: 'domain.properties.j2'
     dest: '/u01/software/domain.properties'
@@ -15,7 +15,7 @@
     owner: "oracle"
     group: "oinstall"
 
-- name: Copy scripts
+- name: (main/datasources) Copy scripts
   copy:
     src: 'scripts/setup_datasources.py'
     dest: '/u01/software/setup_datasources.py'
@@ -23,7 +23,7 @@
     owner: "oracle"
     group: "oinstall"
 
-- name: Create datasources
+- name: (main/datasources) Create datasources
   shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/setup_datasources.py'
   environment:
     weblogic_admin_password: '{{ weblogic_admin_password }}'
