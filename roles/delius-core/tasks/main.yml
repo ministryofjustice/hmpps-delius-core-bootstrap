@@ -1,5 +1,8 @@
 ---
 # tasks file for ndelius
+- name: (main) Set facts
+  set_fact:
+    domain_home: '/u01/app/oracle/middleware/user_projects/domains/{{ domain_name }}'
 
 - name: (main) Debug vars
   debug:
@@ -16,6 +19,9 @@
 
 - name: (main) Set WebLogic startup params
   include: wl_params.yml
+
+- name: (main) Set WebLogic admin password
+  include: admin_password.yml
 
 - name: (main) Setup security realm
   include: security_realm.yml
