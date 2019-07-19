@@ -20,6 +20,9 @@
 - name: (main) Set WebLogic startup params
   include: wl_params.yml
 
+- name: (main) Set WebLogic admin password
+  include: admin_password.yml
+
 - name: (main) Setup security realm
   include: security_realm.yml
 
