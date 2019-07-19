@@ -1,5 +1,8 @@
 ---
 # tasks file for ndelius
+- name: (main) Set facts
+  set_fact:
+    domain_home: '{{ domain_home }}'
 
 - name: (main) Debug vars
   debug:

@@ -108,7 +108,7 @@
 
 - name: Update setDomainEnv for jaas
   lineinfile:
-    path:         '/u01/app/oracle/middleware/user_projects/domains/{{ domain_name }}/bin/setDomainEnv.sh'
+    path:         '{{ domain_home }}/bin/setDomainEnv.sh'
     insertbefore: '^JAVA_OPTIONS="\$\{JAVA_OPTIONS\}"'
     line:         'JAVA_OPTIONS="${JAVA_OPTIONS} -Djava.security.auth.login.config=jaas.config "'
 
