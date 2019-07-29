@@ -1,21 +1,11 @@
 ---
 
 - name: (main/deploy_ndelius) Download NDelius application
-  when: s3_dependencies_bucket is defined
   aws_s3:
     bucket: "{{ s3_dependencies_bucket }}"
     object: /dependencies/delius-core/NDelius-{{ ndelius_version }}/NDelius-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear
     dest: /u01/software/NDelius-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear
     mode: get
-
-- name: (main/deploy_ndelius) Copy local NDelius application
-  when: s3_dependencies_bucket is not defined
-  copy:
-    src: s3/dependencies/delius-core/NDelius-{{ ndelius_version }}/NDelius-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear
-    dest: /u01/software/NDelius-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear
-    mode: 0644
-    owner: oracle
-    group: oinstall
 
 - name: (main/deploy_ndelius) Copy scripts
   copy:
