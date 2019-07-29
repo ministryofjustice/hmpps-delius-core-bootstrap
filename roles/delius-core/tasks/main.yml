@@ -36,6 +36,9 @@
 - name: (main) Deploy NDelius
   include: deploy_ndelius.yml
 
+- name: (main) Deploy jspell
+  include: deploy_jspell.yml
+
 - name: (main) Start weblogic
   become: yes
   systemd:

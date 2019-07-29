@@ -1,0 +1,32 @@
+---
+
+- name: (main/deploy_ndelius) Download jspellhtml application
+  aws_s3:
+    bucket: "{{ s3_dependencies_bucket }}"
+    object: /dependencies/jspellhtml/jspellhtml.war
+    dest: /u01/software/jspellhtml.war
+    mode: get
+
+- name: (main/deploy_ndelius) Unzip jspellhtml application
+  unarchive:
+    src: /u01/software/jspellhtml.war
+    dest: /u01/software/jspellhtml.war-exploded
+    remote_src: yes
+
+- name: (main/deploy_ndelius) Apply whitelisted wordlist
+  copy:
+    src: 'English (GB)_white_list'
+    dest: '/u01/software/jspellhtml.war-exploded/WEB-INF/jspell/English (GB)_white_list'
+
+- name: (main/deploy_ndelius) Deploy application
+  shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/deploy.py {{ item.name }} {{ item.file }} {{ item.order }}'
+  environment:
+    weblogic_admin_password: '{{ weblogic_admin_password }}'
+  become: yes
+  become_user: oracle
+  with_items:
+    - {
+      name: 'jspellhtml',
+      file: '/u01/software/jspellhtml.war-exploded',
+      order: 100
+    }
