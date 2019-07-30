@@ -27,20 +27,14 @@
   environment:
     weblogic_admin_password: '{{ weblogic_admin_password }}'
     ldap_admin_password: '{{ ldap_admin_password }}'
-  become: yes
-  become_user: oracle
 
 - name: (main/security_realm) Create global roles
   shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/setup_roles.py'
   environment:
     weblogic_admin_password: '{{ weblogic_admin_password }}'
-  become: yes
-  become_user: oracle
 
 - name: (main/security_realm) Create test users
   when: ldap_host is not defined
   shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/create_test_users.py'
   environment:
     weblogic_admin_password: '{{ weblogic_admin_password }}'
-  become: yes
-  become_user: oracle

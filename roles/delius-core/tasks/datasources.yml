@@ -28,5 +28,3 @@
   environment:
     weblogic_admin_password: '{{ weblogic_admin_password }}'
     database_password: '{{ database_password }}'
-  become: yes
-  become_user: "oracle"

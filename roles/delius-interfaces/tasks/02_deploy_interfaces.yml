@@ -6,26 +6,11 @@
   become_user: "oracle"
 
 - name: Download deployment files
-  when: s3_dependencies_bucket is defined
   aws_s3:
     bucket: "{{ s3_dependencies_bucket }}"
     object: /dependencies/delius-core/NDelius-{{ ndelius_version }}/{{ item.file }}
     dest: /u01/software/{{ item.file }}
     mode: get
-  with_items:
-    - { file: 'EIS/NDeliusDSSNonSSL-war/NDeliusDSSNonSSL-war-{{ ndelius_version }}.war' }
-    - { file: 'EIS/NDeliusIAPSNonSSL-war/NDeliusIAPSNonSSL-war-{{ ndelius_version }}.war' }
-    - { file: 'EIS/NDeliusOASYSNonSSL-war/NDeliusOASYSNonSSL-war-{{ ndelius_version }}.war' }
-    - { file: 'API/NDelius-api-{{ ndelius_version | regex_replace("\.", "_") }}.war' }
-
-- name: Copy local deployment files
-  when: s3_dependencies_bucket is not defined
-  copy:
-    src: s3/dependencies/delius-core/NDelius-{{ ndelius_version }}/{{ item.file }}
-    dest: /u01/software/{{ item.file }}
-    owner: oracle
-    group: oinstall
-    mode: 0644
   with_items:
     - { file: 'EIS/NDeliusDSSNonSSL-war/NDeliusDSSNonSSL-war-{{ ndelius_version }}.war' }
     - { file: 'EIS/NDeliusIAPSNonSSL-war/NDeliusIAPSNonSSL-war-{{ ndelius_version }}.war' }

@@ -16,38 +16,18 @@
     mode: 0755
 
 - name: Download ActiveMQ application
-  when: s3_dependencies_bucket is defined
   aws_s3:
     bucket: "{{ s3_dependencies_bucket }}"
     object: /dependencies/delius-core/NDelius-{{ ndelius_version }}/SPG/activemq-rar-spg-{{ ndelius_version | regex_replace("\.", "_") }}.rar
     dest: /u01/software/SPG/activemq-rar-spg-{{ ndelius_version | regex_replace("\.", "_") }}.rar
     mode: get
 
-- name: Copy local ActiveMQ application
-  when: s3_dependencies_bucket is not defined
-  copy:
-    src: s3/dependencies/delius-core/NDelius-{{ ndelius_version }}/SPG/activemq-rar-spg-{{ ndelius_version | regex_replace("\.", "_") }}.rar
-    dest: /u01/software/SPG/activemq-rar-spg-{{ ndelius_version | regex_replace("\.", "_") }}.rar
-    owner: oracle
-    group: oinstall
-    mode: 0644
-
 - name: Download NDeliusSPG application
-  when: s3_dependencies_bucket is defined
   aws_s3:
     bucket: "{{ s3_dependencies_bucket }}"
     object: /dependencies/delius-core/NDelius-{{ ndelius_version }}/SPG/NDeliusSPG-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear
     dest: /u01/software/SPG/NDeliusSPG-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear
     mode: get
-
-- name: Copy local NDeliusSPG application
-  when: s3_dependencies_bucket is not defined
-  copy:
-    src: s3/dependencies/delius-core/NDelius-{{ ndelius_version }}/SPG/NDeliusSPG-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear
-    dest: /u01/software/SPG/NDeliusSPG-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear
-    owner: oracle
-    group: oinstall
-    mode: 0644
 
 - name: Create activemq directory
   file:
