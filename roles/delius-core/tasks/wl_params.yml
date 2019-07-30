@@ -1,7 +1,5 @@
 ---
 - name: (main/wl_params) Set JVM args
-  become: yes
-  become_user: oracle
   replace:
     path: '{{ domain_home }}/bin/setDomainEnv.sh'
     regexp: '"-Xms(.+) -Xmx(.+)"'

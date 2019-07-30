@@ -19,25 +19,39 @@
 
 - name: (main) Set WebLogic startup params
   include: wl_params.yml
+  become: yes
+  become_user: oracle
 
 - name: (main) Set WebLogic admin password
   include: admin_password.yml
+  become: yes
+  become_user: oracle
 
 - name: (main) Setup security realm
   include: security_realm.yml
+  become: yes
+  become_user: oracle
 
 - name: (main) Setup datasources
   when: setup_datasources
   include: datasources.yml
+  become: yes
+  become_user: oracle
 
 - name: (main) Apply NDelius configuration
   include: nd_config.yml
+  become: yes
+  become_user: oracle
 
 - name: (main) Deploy NDelius
   include: deploy_ndelius.yml
+  become: yes
+  become_user: oracle
 
 - name: (main) Deploy jspell
   include: deploy_jspell.yml
+  become: yes
+  become_user: oracle
 
 - name: (main) Start weblogic
   become: yes

@@ -15,27 +15,19 @@
   shell: '. ~/.bash_profile &&
     cp -v /u01/software/NDelius.properties ${MW_HOME}/user_projects/domains/{{ domain_name }}/NDelius.properties &&
     cat ${MW_HOME}/user_projects/domains/{{ domain_name }}/NDelius.properties'
-  become: yes
-  become_user: "oracle"
 
 - name: (main/nd_config) Apply log4j.xml
   shell: '. ~/.bash_profile &&
     cp -v /u01/software/log4j.xml ${MW_HOME}/user_projects/domains/{{ domain_name }}/log4j.xml &&
     cat ${MW_HOME}/user_projects/domains/{{ domain_name }}/log4j.xml'
-  become: yes
-  become_user: "oracle"
 
 - name: (main/nd_config) Apply NOMIS configuration
   shell: '. ~/.bash_profile &&
     cp -v /u01/software/nomis-api.properties ${MW_HOME}/user_projects/domains/{{ domain_name }}/nomis-api.properties &&
     cat ${MW_HOME}/user_projects/domains/{{ domain_name }}/nomis-api.properties'
-  become: yes
-  become_user: "oracle"
 
 - name: (main/nd_config) Write password.keyfile
   shell: '. ~/.bash_profile &&
     printf "username={{ ldap_principal }}\npassword=${ldap_admin_password}" >> {{ ldap_passfile }}'
   environment:
     ldap_admin_password: '{{ ldap_admin_password }}'
-  become: yes
-  become_user: "oracle"

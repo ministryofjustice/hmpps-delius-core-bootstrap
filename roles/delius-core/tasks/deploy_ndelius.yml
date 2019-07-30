@@ -11,16 +11,11 @@
   copy:
     src: scripts/deploy.py
     dest: /u01/software/deploy.py
-    mode: 0644
-    owner: oracle
-    group: oinstall
 
 - name: (main/deploy_ndelius) Deploy application
   shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/deploy.py {{ item.name }} {{ item.file }} {{ item.order }}'
   environment:
     weblogic_admin_password: '{{ weblogic_admin_password }}'
-  become: yes
-  become_user: oracle
   with_items:
     - {
       name: 'NDelius-ear-{{ ndelius_version | regex_replace("\.", "_") }}',
