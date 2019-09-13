@@ -2,8 +2,14 @@
 - name: (main/wl_params) Set JVM args
   replace:
     path: '{{ domain_home }}/bin/setDomainEnv.sh'
-    regexp: '"-Xms(.+) -Xmx(.+)"'
+    regexp: '"-Xms.+ -Xmx.+"'
     replace: '"{{ jvm_mem_args }}"'
+
+- name: (main/wl_params) Set JVM args for WLST
+  replace:
+    path: '{{ wl_home }}/common/bin/commEnv.sh'
+    regexp: '-Xms.+ -Xmx.+'
+    replace: '-Xms1g -Xmx1g'
 
 - name: (main/wl_params) Update setDomainEnv for GC
   lineinfile:
