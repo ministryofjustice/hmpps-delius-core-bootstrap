@@ -58,16 +58,35 @@ def endOfScriptRun():
     print 'Done executing the script.'
 
 
-def deployArtifact(name, artifact, order):
+def deploy(name, artifact):
     print "Deploying " + artifact + "... "
-    deploy(name, '/u01/software/' + artifact, upload='true', timeout=900000, deploymentOrder=int(order))
+    deploy(name, '/u01/software/' + artifact, upload='true', timeout=900000)
     print "Finished deploying " + artifact
+
+
+def deployWithPlan(name, artifact, plan):
+    print "Deploying " + artifact + "... "
+    deploy(name, '/u01/software/' + artifact, upload='true', timeout=900000, planPath=plan)
+    print "Finished deploying " + artifact
+
+
+def setDeploymentOrder(artifact, order):
+    print "Setting deployment order... "
+    cd('AppDeployments')
+    cd(artifact)
+    cmo.setDeploymentOrder(int(order))
 
 
 try:
     initConfigToScriptRun()
+    if len(sys.argv) == 4:
+        deploy(sys.argv[1], sys.argv[2])
+    elif len(sys.argv) == 5:
+        deployWithPlan(sys.argv[1], sys.argv[2], sys.argv[4])
+    else:
+        print "Invalid parameters. Found " + str(len(sys.argv))
     startTransaction()
-    deployArtifact(sys.argv[1], sys.argv[2], sys.argv[3])
+    setDeploymentOrder(sys.argv[1], sys.argv[3])
     endTransaction()
 finally:
     endOfScriptRun()

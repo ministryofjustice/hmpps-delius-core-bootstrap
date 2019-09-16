@@ -9,16 +9,20 @@
 
 - name: (main/deploy_ndelius) Copy scripts
   copy:
-    src: scripts/deploy.py
-    dest: /u01/software/deploy.py
+    src: scripts/{{ item }}
+    dest: /u01/software/{{ item }}
+  with_items:
+    - deploy.py
+    - form-plan.xml
 
 - name: (main/deploy_ndelius) Deploy application
-  shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/deploy.py {{ item.name }} {{ item.file }} {{ item.order }}'
+  shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/deploy.py {{ item.name }} {{ item.file }} {{ item.order }} {{ item.plan }}'
   environment:
     weblogic_admin_password: '{{ weblogic_admin_password }}'
   with_items:
     - {
       name: 'NDelius-ear-{{ ndelius_version | regex_replace("\.", "_") }}',
       file: 'NDelius-ear-{{ ndelius_version | regex_replace("\.", "_") }}.ear',
-      order: 100
+      order: 100,
+      plan: '/u01/software/form-plan.xml'
     }
