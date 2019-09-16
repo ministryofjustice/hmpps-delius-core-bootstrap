@@ -58,7 +58,7 @@ def endOfScriptRun():
     print 'Done executing the script.'
 
 
-def deploy(name, artifact):
+def deployWithoutPlan(name, artifact):
     print "Deploying " + artifact + "... "
     deploy(name, '/u01/software/' + artifact, upload='true', timeout=900000)
     print "Finished deploying " + artifact
@@ -80,7 +80,7 @@ def setDeploymentOrder(artifact, order):
 try:
     initConfigToScriptRun()
     if len(sys.argv) == 4:
-        deploy(sys.argv[1], sys.argv[2])
+        deployWithoutPlan(sys.argv[1], sys.argv[2])
     elif len(sys.argv) == 5:
         deployWithPlan(sys.argv[1], sys.argv[2], sys.argv[4])
     else:
