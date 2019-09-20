@@ -27,6 +27,7 @@ server_listen_port: Port to publish on
 
 # Database
 database_url: JDBC URL for the database connection
+database_pool_size: Connection pool size for the NDELIUS datasource
 setup_datasources: Whether to setup or skip setting up the database connection
 
 # Alfresco

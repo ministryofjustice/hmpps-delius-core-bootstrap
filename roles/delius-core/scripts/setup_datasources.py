@@ -144,6 +144,8 @@ def setAttributes_JDBCConnectionPoolParams_NDELIUS():
     print "setting attributes for mbean type JDBCConnectionPoolParams"
     set("TestTableName", "SQL SELECT 1 FROM DUAL")
     set("CredentialMappingEnabled", "true")
+    set("MaxCapacity", databasePoolSize)
+    set("MinCapacity", databasePoolSize)
 
 def setAttributesFor_user_NDELIUS():
     cd("/JDBCSystemResources/NDELIUS/JDBCResource/NDELIUS/JDBCDriverParams/NDELIUS/Properties/NDELIUS/Properties/user")
