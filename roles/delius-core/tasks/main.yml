@@ -55,15 +55,15 @@
   become: yes
   become_user: oracle
 
+- name: (main) Install proxy to insert SSL header
+  include: haproxy.yml
+
 - name: (main) Start weblogic
   become: yes
   systemd:
     name: weblogic.service
     state: restarted
     enabled: yes
-
-- name: (main) Install proxy to insert SSL header
-  include: haproxy.yml
 
 - name: (main) set tag to indicate deployed ndelius_version
   ec2_tag:
