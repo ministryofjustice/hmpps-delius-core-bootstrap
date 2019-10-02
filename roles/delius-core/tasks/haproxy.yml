@@ -28,7 +28,17 @@
     state: restarted
     enabled: yes
 
+- name: (main/haproxy) Copy scripts
+  copy:
+    src: scripts/wl_proxy_ssl.py
+    dest: /u01/software/wl_proxy_ssl.py
+    mode: 0755
+    owner: oracle
+    group: oinstall
+
 - name: (main/haproxy) Enable WebLogic plugin support in console
   shell: '. ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/wl_proxy_ssl.py'
+  become: yes
+  become_user: oracle
   environment:
     weblogic_admin_password: '{{ weblogic_admin_password }}'
