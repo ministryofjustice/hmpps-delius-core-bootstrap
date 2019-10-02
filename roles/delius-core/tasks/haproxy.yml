@@ -1,12 +1,17 @@
 ---
 
+- name: (main/haproxy) Install repo
+  become: yes
+  yum:
+    name: centos-release-scl
+    state: present
+
 - name: (main/haproxy) Install packages
   become: yes
   yum:
     name: '{{ item }}'
     state: present
   with_items:
-    - centos-release-scl
     - rh-haproxy18-haproxy
     - rh-haproxy18-haproxy-syspaths
 
