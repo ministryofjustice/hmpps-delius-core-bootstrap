@@ -3,6 +3,7 @@
 - name: (main) Set facts
   set_fact:
     wl_home: /u01/app/oracle/middleware/wlserver_10.3
+    wl_port: 7001
     domain_home: '/u01/app/oracle/middleware/user_projects/domains/{{ domain_name }}'
 
 - name: (main) Debug vars
@@ -60,6 +61,9 @@
     name: weblogic.service
     state: restarted
     enabled: yes
+
+- name: (main) Install proxy to insert SSL header
+  include: haproxy.yml
 
 - name: (main) set tag to indicate deployed ndelius_version
   ec2_tag:

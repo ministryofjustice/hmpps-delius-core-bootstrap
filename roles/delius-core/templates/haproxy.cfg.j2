@@ -1,0 +1,10 @@
+defaults
+  mode http
+  timeout connect 10s
+  timeout client 30s
+  timeout server 30s
+
+listen l1
+  bind *:{{ server_listen_port }}
+  http-request add-header WL-Proxy-SSL true
+  server local localhost:{{ wl_port }} init-addr last,libc,none

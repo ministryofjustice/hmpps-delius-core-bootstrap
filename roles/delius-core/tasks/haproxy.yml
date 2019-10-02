@@ -1,0 +1,24 @@
+---
+
+- name: (main/haproxy) Install packages
+  become: yes
+  yum:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - centos-release-scl
+    - rh-haproxy18-haproxy
+    - rh-haproxy18-haproxy-syspaths
+
+- name: (main/haproxy) Configure proxy
+  become: yes
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/opt/rh/rh-haproxy18/haproxy/haproxy.cfg
+
+- name: (main/haproxy) Start proxy
+  become: yes
+  systemd:
+    name: rh-haproxy18-haproxy
+    state: restarted
+    enabled: yes
