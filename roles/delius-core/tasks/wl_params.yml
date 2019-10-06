@@ -15,4 +15,4 @@
   lineinfile:
     path:         '{{ domain_home }}/bin/setDomainEnv.sh'
     insertbefore: '^JAVA_OPTIONS="\$\{JAVA_OPTIONS\}"'
-    line:         'JAVA_OPTIONS="${JAVA_OPTIONS} -XX:+UseG1GC -DDMS_Protocol=https user.timezone=Europe/London "'
+    line:         'JAVA_OPTIONS="${JAVA_OPTIONS} -XX:+UseG1GC -DDMS_Protocol=https -Duser.timezone=Europe/London "'
