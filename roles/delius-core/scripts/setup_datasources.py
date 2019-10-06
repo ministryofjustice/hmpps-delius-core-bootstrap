@@ -146,6 +146,7 @@ def setAttributes_JDBCConnectionPoolParams_NDELIUS():
     set("CredentialMappingEnabled", "true")
     set("MaxCapacity", databasePoolSize)
     set("MinCapacity", databasePoolSize)
+    set("InactiveConnectionTimeoutSeconds", "30")
 
 def setAttributesFor_user_NDELIUS():
     cd("/JDBCSystemResources/NDELIUS/JDBCResource/NDELIUS/JDBCDriverParams/NDELIUS/Properties/NDELIUS/Properties/user")
