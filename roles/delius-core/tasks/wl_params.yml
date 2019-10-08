@@ -11,8 +11,16 @@
     regexp: '-Xms.+ -Xmx.+'
     replace: '-Xms1g -Xmx1g'
 
-- name: (main/wl_params) Update JVM params for the domain (G1GC, JMX)
+- name: (main/wl_params) Update JVM params for the domain
   lineinfile:
     path:         '{{ domain_home }}/bin/setDomainEnv.sh'
     insertbefore: '^JAVA_OPTIONS="\$\{JAVA_OPTIONS\}"'
-    line:         'JAVA_OPTIONS="${JAVA_OPTIONS} -XX:+UseG1GC -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=1099 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false"'
+    line:         'JAVA_OPTIONS="${JAVA_OPTIONS} {{ item }}'
+  with_items:
+    - -XX:+UseG1GC
+    - -Dcom.sun.management.jmxremote
+    - -Dcom.sun.management.jmxremote.port=8000
+    - -Dcom.sun.management.jmxremote.ssl=false
+    - -Dcom.sun.management.jmxremote.authenticate=false
+    - -DDMS_Protocol=https
+    - -Duser.timezone=Europe/London
