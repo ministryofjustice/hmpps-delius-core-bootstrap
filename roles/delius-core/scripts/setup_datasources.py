@@ -144,8 +144,8 @@ def setAttributes_JDBCConnectionPoolParams_NDELIUS():
     print "setting attributes for mbean type JDBCConnectionPoolParams"
     set("TestTableName", "SQL SELECT 1 FROM DUAL")
     set("CredentialMappingEnabled", "true")
-    set("MaxCapacity", databasePoolSize)
-    set("MinCapacity", databasePoolSize)
+    set("MaxCapacity", databaseMaxPoolSize)
+    set("MinCapacity", databaseMinPoolSize)
     set("InactiveConnectionTimeoutSeconds", "30")
 
 def setAttributesFor_user_NDELIUS():
@@ -170,6 +170,8 @@ def setAttributes_JDBCConnectionPoolParams_NDELIUS_JTA():
     cd("/JDBCSystemResources/NDELIUS_JTA/JDBCResource/NDELIUS_JTA/JDBCConnectionPoolParams/NDELIUS_JTA")
     print "setting attributes for mbean type JDBCConnectionPoolParams"
     set("TestTableName", "SQL SELECT 1 FROM DUAL")
+    set("MaxCapacity", databaseMaxPoolSize)
+    set("MinCapacity", databaseMinPoolSize)
     set("CredentialMappingEnabled", "true")
 
 try:
