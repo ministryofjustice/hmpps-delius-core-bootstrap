@@ -15,7 +15,7 @@
   lineinfile:
     path:         '{{ domain_home }}/bin/setDomainEnv.sh'
     insertbefore: '^JAVA_OPTIONS="\$\{JAVA_OPTIONS\}"'
-    line:         'JAVA_OPTIONS="${JAVA_OPTIONS} {{ item }}'
+    line:         'JAVA_OPTIONS="${JAVA_OPTIONS} {{ item }}"'
   with_items:
     - -XX:+UseG1GC
     - -Dcom.sun.management.jmxremote
