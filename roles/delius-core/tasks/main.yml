@@ -62,7 +62,7 @@
   become: yes
   systemd:
     name: weblogic.service
-    state: restarted
+    state: started
     enabled: yes
 
 - name: (main) set tag to indicate deployed ndelius_version
