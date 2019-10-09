@@ -58,6 +58,13 @@
 - name: (main) Install proxy to insert SSL header
   include: haproxy.yml
 
+- name: (main) Cron job for nightly service restart
+  become: yes
+  cron:
+    name: Restart WebLogic
+    job: 'systemctl restart weblogic'
+    special_time: '0 2 * * *'
+
 - name: (main) Start weblogic
   become: yes
   systemd:
