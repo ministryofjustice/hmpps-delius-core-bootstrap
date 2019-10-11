@@ -64,6 +64,14 @@
   become: yes
   become_user: oracle
 
+- name: (main) Cron job for nightly service restart
+  become: yes
+  cron:
+    name: Restart WebLogic
+    job: 'systemctl restart weblogic'
+    minute: '0'
+    hour: '2'
+
 - name: (main) set tag to indicate deployed ndelius_version
   ec2_tag:
     region: "{{ region }}"
