@@ -29,6 +29,13 @@
   become: yes
   become_user: oracle
 
+- name: (main) Start weblogic
+  become: yes
+  systemd:
+    name: weblogic.service
+    state: started
+    enabled: yes
+
 - name: (main) Setup security realm
   include: security_realm.yml
   become: yes
@@ -57,13 +64,6 @@
 
 - name: (main) Install proxy to insert SSL header
   include: haproxy.yml
-
-- name: (main) Start weblogic
-  become: yes
-  systemd:
-    name: weblogic.service
-    state: started
-    enabled: yes
 
 - name: (main) set tag to indicate deployed ndelius_version
   ec2_tag:
