@@ -38,7 +38,7 @@ alfresco_office_host: Alfresco hostname for opening Office documents
 alfresco_office_port: Alfresco port for opening Office documents
 
 # SPG
-spg_host: SPG broker hostname
+spg_jms_url: SPG broker hostname
 
 # LDAP
 ldap_host: LDAP master hostname for writing to
