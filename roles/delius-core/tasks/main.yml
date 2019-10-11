@@ -30,11 +30,7 @@
   become_user: oracle
 
 - name: (main) Start weblogic
-  become: yes
-  systemd:
-    name: weblogic.service
-    state: started
-    enabled: yes
+  include: start_weblogic.yml
 
 - name: (main) Setup security realm
   include: security_realm.yml
