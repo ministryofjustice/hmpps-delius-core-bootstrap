@@ -30,7 +30,7 @@
   become_user: oracle
 
 - name: (main) Start weblogic
-  include: start_weblogic.yml
+  include: restart_weblogic.yml
 
 - name: (main) Setup security realm
   include: security_realm.yml
@@ -48,6 +48,12 @@
   become: yes
   become_user: oracle
 
+- name: (main) Install proxy to insert SSL header
+  include: haproxy.yml
+
+- name: (main) Retart weblogic to apply config changes
+  include: restart_weblogic.yml
+
 - name: (main) Deploy NDelius
   include: deploy_ndelius.yml
   become: yes
@@ -57,9 +63,6 @@
   include: deploy_jspell.yml
   become: yes
   become_user: oracle
-
-- name: (main) Install proxy to insert SSL header
-  include: haproxy.yml
 
 - name: (main) set tag to indicate deployed ndelius_version
   ec2_tag:
