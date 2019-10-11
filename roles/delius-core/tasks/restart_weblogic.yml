@@ -1,0 +1,12 @@
+---
+- name: (main/start_weblogic) Start service
+  become: yes
+  systemd:
+    name: weblogic.service
+    state: restarted
+    enabled: yes
+
+- name: (main/start_weblogic) Wait for service to respond
+  wait_for:
+    host: localhost
+    port: 7001
