@@ -1,5 +1,5 @@
 # TODO review these and move to env-configs:
-remote_broker_url: tcp://{{ spg_host }}:61616
+remote_broker_url: "{{ spg_jms_url }}"
 remote_broker_username: spgsmx
 remote_broker_password: spgsmx1000000
 activemq_data_folder: activemq_data
