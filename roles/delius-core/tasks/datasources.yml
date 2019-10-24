@@ -1,11 +1,11 @@
 ---
 
-- name: (main/datasources) Wait for database to be up
+- name: (main/datasources) Wait for database to be up (max 6 hours)
   wait_for:
     host: '{{ primary_db_host }}'
     port: 1521
     sleep: 30
-    timeout: 7200
+    timeout: 21600
 
 - name: (main/datasources) Copy domain.properties
   template:
