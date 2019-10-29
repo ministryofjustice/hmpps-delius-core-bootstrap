@@ -1,4 +1,12 @@
 ---
+
+- name: (main/wl_params) Remove default MaxPermSize setting
+  when: '"-XX:MaxPermSize" in jvm_mem_args'
+  replace:
+    path: '{{ domain_home }}/bin/setDomainEnv.sh'
+    regexp: '"-XX:MaxPermSize=.+"'
+    replace: '""'
+
 - name: (main/wl_params) Set JVM args
   replace:
     path: '{{ domain_home }}/bin/setDomainEnv.sh'
