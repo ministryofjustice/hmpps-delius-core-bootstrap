@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
+weblogic_password=$(aws ssm get-parameter --region {{ region }} --with-decryption \
+--name /{{ environment_name }}/{{ project_name }}/weblogic/{{ app_name }}-domain/weblogic_admin_password | jq -r .Parameter.Value)
+
+# Get WebLogic metrics from WLST
+${WLS_HOME}/common/bin/wlst.sh <<EOF |
+def get_wlst_metric(name, unit, path):
+  print('value:' + name + ' ' + unit + ' ' + str(get(path)))
+
+connect('weblogic', '${weblogic_password}')
+serverRuntime()
+
+# Server
+get_wlst_metric('OpenSessions', 'Count', '/ApplicationRuntimes/NDelius-ear-{{ ndelius_version | regex_replace("\.", "_") }}/ComponentRuntimes/AdminServer_/NDelius-war/OpenSessionsCurrentCount')
+get_wlst_metric('Connections', 'Count', '/ServerChannelRuntimes/Default[http]/ConnectionsCount')
+
+# JVM
+get_wlst_metric('HeapSizeMax', 'Bytes', '/JVMRuntime/AdminServer/HeapSizeMax')
+get_wlst_metric('HeapSizeCurrent', 'Bytes', '/JVMRuntime/AdminServer/HeapSizeCurrent')
+get_wlst_metric('HeapFreeCurrent', 'Bytes', '/JVMRuntime/AdminServer/HeapFreeCurrent')
+get_wlst_metric('Uptime', 'Milliseconds', '/JVMRuntime/AdminServer/Uptime')
+
+# Database
+get_wlst_metric('ActiveJDBCConnections', 'Count', '/JDBCServiceRuntime/AdminServer/JDBCDataSourceRuntimeMBeans/NDELIUS/ActiveConnectionsCurrentCount')
+get_wlst_metric('ActiveJTATransactions', 'Count', '/JTARuntime/JTARuntime/ActiveTransactionsTotalCount')
+get_wlst_metric('TotalJTATransactions', 'Count', '/JTARuntime/JTARuntime/TransactionTotalCount')
+
+EOF
+grep -oP 'value:\K.*' | \
+awk '{ system("aws cloudwatch put-metric-data \
+        --region {{ region }} \
+        --dimensions InstanceID='${INSTANCE_ID}',AutoScalingGroupName={{ environment_name }}-{{ app_name }} \
+        --namespace WebLogic \
+        --metric-name "$1" \
+        --unit "$2" \
+        --value "$3) }'
+
+
+# Get spg-specific JMX metrics for activemq
+{% if app_name=='spg' %}
+
+function push_jmx_metric()
+{
+  name=$1
+  attr=$2
+  mbean=$3
+  value=$(java -jar /u01/software/cmdline-jmxclient-0.10.3.jar - localhost:8000 ${mbean} ${attr} 2>&1 | grep -oP '^.*: \K.*')
+  echo "${name}=${value}"
+
+  [ -z ${value} ] || aws cloudwatch put-metric-data \
+      --region {{ region }} \
+      --dimensions InstanceID=${INSTANCE_ID},AutoScalingGroupName={{ environment_name }}-{{ app_name }} \
+      --namespace "WebLogic" \
+      --metric-name "${name}" \
+      --value "${value}"
+
+}
+
+push_jmx_metric 'InboundQueueSize' 'QueueSize' 'org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=NDELIUS_INBOUND'
+push_jmx_metric 'InboundQueueDispatchCount' 'DispatchCount' 'org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=NDELIUS_INBOUND'
+push_jmx_metric 'OutboundQueueSize' 'QueueSize' 'org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=NDELIUS_OUTBOUND'
+push_jmx_metric 'OutboundQueueDispatchCount' 'DispatchCount' 'org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=NDELIUS_OUTBOUND'
+
+{% endif %}
+

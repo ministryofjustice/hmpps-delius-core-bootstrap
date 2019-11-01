@@ -64,6 +64,10 @@
   become: yes
   become_user: oracle
 
+- name: (main) Enable metrics
+  include: monitoring.yml
+  become: yes
+
 - name: (main) Cron job for nightly service restart
   become: yes
   cron:
