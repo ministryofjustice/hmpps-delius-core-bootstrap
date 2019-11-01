@@ -49,7 +49,7 @@ function push_jmx_metric()
   echo "${name}=${value}"
 
   # Only push the metric if a value is returned
-  [ -z ${value+x} ] || aws cloudwatch put-metric-data \
+  [ -z "${value}" ] || aws cloudwatch put-metric-data \
       --region {{ region }} \
       --dimensions InstanceID=${INSTANCE_ID},AutoScalingGroupName={{ environment_name }}-${HMPPS_ROLE} \
       --namespace "WebLogic" \
