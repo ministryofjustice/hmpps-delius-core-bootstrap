@@ -26,7 +26,7 @@ get_wlst_metric('Uptime', 'Milliseconds', '/JVMRuntime/AdminServer/Uptime')
 
 # Database
 get_wlst_metric('ActiveJDBCConnections', 'Count', '/JDBCServiceRuntime/AdminServer/JDBCDataSourceRuntimeMBeans/NDELIUS/ActiveConnectionsCurrentCount')
-get_wlst_metric('TotalJDBCConnections', 'Count', '/JDBCServiceRuntime/AdminServer/JDBCDataSourceRuntimeMBeans/NDELIUS/ConnectionsTotalCount')
+get_wlst_metric('TotalJDBCConnectionReservations', 'Count', '/JDBCServiceRuntime/AdminServer/JDBCDataSourceRuntimeMBeans/NDELIUS/ReserveRequestCount')
 get_wlst_metric('ActiveJTATransactions', 'Count', '/JTARuntime/JTARuntime/ActiveTransactionsTotalCount')
 get_wlst_metric('TotalJTATransactions', 'Count', '/JTARuntime/JTARuntime/TransactionTotalCount')
 
