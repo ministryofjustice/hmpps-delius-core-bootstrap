@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
+. /etc/environment
 
 INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
 weblogic_password=$(aws ssm get-parameter --region {{ region }} --with-decryption \
---name /{{ environment_name }}/{{ project_name }}/weblogic/{{ app_name }}-domain/weblogic_admin_password | jq -r .Parameter.Value)
+--name /{{ environment_name }}/{{ project_name }}/weblogic/${HMPPS_ROLE}-domain/weblogic_admin_password | jq -r .Parameter.Value)
 
 # Get WebLogic metrics from WLST
 ${WLS_HOME}/common/bin/wlst.sh <<EOF |
@@ -29,18 +30,16 @@ get_wlst_metric('TotalJTATransactions', 'Count', '/JTARuntime/JTARuntime/Transac
 
 EOF
 grep -oP 'value:\K.*' | \
-awk '{ system("aws cloudwatch put-metric-data \
+awk '{ system("echo "$1"="$3"; aws cloudwatch put-metric-data \
         --region {{ region }} \
-        --dimensions InstanceID='${INSTANCE_ID}',AutoScalingGroupName={{ environment_name }}-{{ app_name }} \
+        --dimensions InstanceID='${INSTANCE_ID}',AutoScalingGroupName={{ environment_name }}-'${HMPPS_ROLE}' \
         --namespace WebLogic \
         --metric-name "$1" \
         --unit "$2" \
         --value "$3) }'
 
 
-# Get spg-specific JMX metrics for activemq
-{% if app_name=='spg' %}
-
+# Get JMX metrics from jmcclient
 function push_jmx_metric()
 {
   name=$1
@@ -49,19 +48,16 @@ function push_jmx_metric()
   value=$(java -jar /u01/software/cmdline-jmxclient-0.10.3.jar - localhost:8000 ${mbean} ${attr} 2>&1 | grep -oP '^.*: \K.*')
   echo "${name}=${value}"
 
-  [ -z ${value} ] || aws cloudwatch put-metric-data \
+  # Only push the metric if a value is returned
+  [ -z ${value+x} ] || aws cloudwatch put-metric-data \
       --region {{ region }} \
-      --dimensions InstanceID=${INSTANCE_ID},AutoScalingGroupName={{ environment_name }}-{{ app_name }} \
+      --dimensions InstanceID=${INSTANCE_ID},AutoScalingGroupName={{ environment_name }}-${HMPPS_ROLE} \
       --namespace "WebLogic" \
       --metric-name "${name}" \
       --value "${value}"
-
 }
 
 push_jmx_metric 'InboundQueueSize' 'QueueSize' 'org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=NDELIUS_INBOUND'
 push_jmx_metric 'InboundQueueDispatchCount' 'DispatchCount' 'org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=NDELIUS_INBOUND'
 push_jmx_metric 'OutboundQueueSize' 'QueueSize' 'org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=NDELIUS_OUTBOUND'
 push_jmx_metric 'OutboundQueueDispatchCount' 'DispatchCount' 'org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=NDELIUS_OUTBOUND'
-
-{% endif %}
-
