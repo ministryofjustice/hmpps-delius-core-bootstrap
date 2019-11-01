@@ -15,7 +15,7 @@
 - name: (monitoring) Create a cron job to update metrics every minute
   cron:
     name: Update metrics
-    job: /u01/software/update_metrics.sh
+    job: . ~/.bash_profile && /u01/software/update_metrics.sh
     minute: '*'
     hour: '*'
     day: '*'
