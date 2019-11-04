@@ -1,0 +1,23 @@
+---
+
+- name: (monitoring) Create script for pushing mbean info to cloudwatch
+  template:
+    src: update_metrics.sh.j2
+    dest: /u01/software/update_metrics.sh
+    mode: u+x
+
+- name: (monitoring) Copy jmx cli tool
+  copy:
+    src: cmdline-jmxclient-0.10.3.jar
+    dest: /u01/software/cmdline-jmxclient-0.10.3.jar
+    mode: u+x
+
+- name: (monitoring) Create a cron job to update metrics every minute
+  cron:
+    name: Update metrics
+    job: . ~/.bash_profile && /u01/software/update_metrics.sh
+    minute: '*'
+    hour: '*'
+    day: '*'
+    month: '*'
+    weekday: '*'
