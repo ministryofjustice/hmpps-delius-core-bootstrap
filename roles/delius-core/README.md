@@ -72,6 +72,9 @@ usermanagement_secret: UMT shared key
 nomis_url: NOMIS url
 nomis_client_id: NOMIS OAuth id
 nomis_client_secret: NOMIS OAuth secret
+
+# Password Reset Tool
+password_reset_url: PWM (password-reset) url, to be presented on the login page
 ```
 
 Example Playbook
