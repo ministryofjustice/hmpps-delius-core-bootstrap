@@ -69,20 +69,20 @@
   become: yes
   become_user: oracle
 
-- name: (main) Cron job for nightly WebLogic service restart (Every day at 2am)
+- name: (main) Cron job for nightly WebLogic service restart (Every day at 02:15)
   become: yes
   cron:
     name: Restart WebLogic nightly
     job: 'timeout 5 bash -c "</dev/tcp/$(hostname)/61617" || systemctl restart weblogic'
-    minute: '0'
+    minute: '15'
     hour: '2'
 
-- name: (main) Cron job for weekly ActiveMQ service restart (Sunday at midnight)
+- name: (main) Cron job for weekly ActiveMQ service restart (Sunday at 00:15)
   become: yes
   cron:
     name: Restart WebLogic weekly
     job: 'timeout 5 bash -c "</dev/tcp/$(hostname)/61617" && systemctl restart weblogic'
-    minute: '0'
+    minute: '15'
     hour: '0'
     weekday: '0'
 
