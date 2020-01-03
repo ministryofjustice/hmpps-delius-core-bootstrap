@@ -50,7 +50,12 @@ PASSWORD_RESET_URL={{ password_reset_url | default('') }}
 # Google analytics
 ANALYTICS_TAG={{ ndelius_analytics_tag }}
 
+# Document management
 DMS_HOST={{ alfresco_host | regex_replace('\.$', '') }}
 DMS_PORT={{ alfresco_port }}
 DMS_OFFICE_URI_HOST={{ alfresco_office_host | regex_replace('\.$', '') }}
 DMS_OFFICE_URI_PORT={{ alfresco_office_port }}
+
+# Approved Premises Tracker
+APTRACKER_ERRORS_URL={{ aptracker_api_errors_url | default('') }}
+APTRACKER_ERRORS_SECRET={{ aptracker_api_errors_secret | default('') }}
