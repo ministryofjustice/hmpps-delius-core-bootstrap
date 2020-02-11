@@ -142,7 +142,7 @@
 		 containing patch for thread leak defect in org.apache.activemq.ActiveMQConnection. (see https://issues.apache.org/jira/browse/AMQ-4586)
 	 -->
 	<bean id="remoteCF" class="org.apache.activemq.PatchedActiveMQConnectionFactory" depends-on="broker">
-		<property name="brokerURL" value="{{ remote_broker_url }}" />
+		<property name="brokerURL" value="{{ remote_broker_url | regex_replace('\.:', ':') }}" />
 		<property name="userName" value="{{ remote_broker_username }}" />
 		<property name="password" value="{{ remote_broker_password }}" />
 	</bean>
