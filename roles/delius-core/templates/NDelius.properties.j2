@@ -57,5 +57,6 @@ DMS_OFFICE_URI_HOST={{ alfresco_office_host | regex_replace('\.$', '') }}
 DMS_OFFICE_URI_PORT={{ alfresco_office_port }}
 
 # Approved Premises Tracker
+# The APTRACKER_ERRORS_SECRET is left here for backwards compatibility with ND<=4.5.3 only, and will be removed/replaced by USERMANAGEMENT_SECRET in a future build
 APTRACKER_ERRORS_URL={{ aptracker_api_errors_url | default('') }}
-APTRACKER_ERRORS_SECRET={{ aptracker_api_errors_secret | default('') }}
+APTRACKER_ERRORS_SECRET={{ usermanagement_secret }}
