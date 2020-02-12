@@ -58,5 +58,6 @@ DMS_OFFICE_URI_PORT={{ alfresco_office_port }}
 
 # Approved Premises Tracker
 # The APTRACKER_ERRORS_SECRET is left here for backwards compatibility with ND<=4.5.3 only, and will be removed/replaced by USERMANAGEMENT_SECRET in a future build
-APTRACKER_ERRORS_SECRET={{ usermanagement_secret }} # TODO remove this once the NDelius change has been deployed to production and we're confident there is no need to rollback
+# TODO remove this property once the NDelius change has been deployed to production and we're confident there is no need to rollback
+APTRACKER_ERRORS_SECRET={{ usermanagement_secret }}
 APTRACKER_ERRORS_URL={{ aptracker_api_errors_url | default('') }}
