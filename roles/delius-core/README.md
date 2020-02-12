@@ -78,7 +78,6 @@ password_reset_url: PWM (password-reset) url, to be presented on the login page
 
 # Approved Premises Tracker API
 aptracker_api_errors_url: URL for the Approved Premises Tracker API errors screen
-aptracker_api_errors_secret: Shared key to allow Delius authentication for the errors screen
 ```
 
 Example Playbook
