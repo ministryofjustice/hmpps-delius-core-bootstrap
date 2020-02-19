@@ -13,9 +13,11 @@
     mode: u+x
 
 - name: (monitoring) Create a cron job to update metrics every minute
+  become: yes
+  become_user: root
   cron:
     name: Update metrics
-    job: . ~/.bash_profile && /u01/software/update_metrics.sh
+    job: sudo -u oracle bash -c '. ~/.bash_profile && /u01/software/update_metrics.sh'
     minute: '*'
     hour: '*'
     day: '*'
