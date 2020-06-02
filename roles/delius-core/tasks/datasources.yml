@@ -28,7 +28,7 @@
 - name: (main/datasources) Copy libs postgres driver
   copy:
     src: files/postgresql-42.2.12.jre7.jar
-    dest: '{{ domain_home }}/lib/postgresql-42.2.12.jre7.jar'
+    dest: '{{ wl_home }}/lib/postgresql-42.2.12.jre7.jar'
     mode: 0755
 
 - name: (main/datasources) Create datasources
