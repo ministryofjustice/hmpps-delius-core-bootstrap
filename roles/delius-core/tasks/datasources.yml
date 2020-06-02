@@ -25,8 +25,15 @@
     dest: '{{ domain_home }}/lib/xmlparserv2.jar'
     mode: 0755
 
+- name: (main/datasources) Copy libs postgres driver
+  copy:
+    src: files/postgresql-42.2.12.jre7.jar
+    dest: '{{ domain_home }}/lib/postgresql-42.2.12.jre7.jar'
+    mode: 0755
+
 - name: (main/datasources) Create datasources
   shell: . ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/setup_datasources.py
   environment:
     weblogic_admin_password: '{{ weblogic_admin_password }}'
     database_password: '{{ database_password }}'
+    ps_database_password: "{{ lookup('aws_ssm', '/delius-core-dev/delius-core/delius-gdpr-database/db/admin_password', region=region) }}"

@@ -174,6 +174,53 @@ def setAttributes_JDBCConnectionPoolParams_NDELIUS_JTA():
     set("MinCapacity", databaseMinPoolSize)
     set("CredentialMappingEnabled", "true")
 
+## PERSISTENCE_STORE postgres DB
+
+def setAttributesFor_PERSISTENCE_STORE():
+    cd("/JDBCSystemResources/PERSISTENCE_STORE")
+    print "setting attributes for mbean type JDBCSystemResource"
+    refBean0 = getMBean("/Servers/AdminServer")
+    theValue = jarray.array([refBean0], Class.forName("weblogic.management.configuration.TargetMBean"))
+    cmo.setTargets(theValue)
+
+def setAttributesFor_user_PERSISTENCE_STORE():
+    cd("/JDBCSystemResources/PERSISTENCE_STORE/JDBCResource/PERSISTENCE_STORE/JDBCDriverParams/PERSISTENCE_STORE/Properties/PERSISTENCE_STORE/Properties/user")
+    print "setting attributes for mbean type JDBCProperty"
+    set("Value", "postgres")
+    set("Name", "user")
+
+def setAttributes_JDBCDataSourceParams_PERSISTENCE_STORE():
+    cd("/JDBCSystemResources/PERSISTENCE_STORE/JDBCResource/PERSISTENCE_STORE/JDBCDataSourceParams/PERSISTENCE_STORE")
+    print "setting attributes for mbean type JDBCDataSourceParams"
+    set("GlobalTransactionsProtocol", "None")
+    set("JNDINames", jarray.array(["PERSISTENCE_STORE"], String))
+
+#def setAttributes_JDBCOracleParams_PERSISTENCE_STORE():
+#    cd("/JDBCSystemResources/PERSISTENCE_STORE/JDBCResource/PERSISTENCE_STORE/JDBCOracleParams/PERSISTENCE_STORE")
+#    print "setting attributes for mbean type JDBCOracleParams"
+#    set("UseDatabaseCredentials", "true")
+
+def setAttributes_JDBCConnectionPoolParams_PERSISTENCE_STORE():
+    cd("/JDBCSystemResources/PERSISTENCE_STORE/JDBCResource/PERSISTENCE_STORE/JDBCConnectionPoolParams/PERSISTENCE_STORE")
+    print "setting attributes for mbean type JDBCConnectionPoolParams"
+    set("TestTableName", "SQL SELECT 1")
+    #set("CredentialMappingEnabled", "true")
+    #set("MaxCapacity", databaseMaxPoolSize)
+    #set("MinCapacity", databaseMinPoolSize)
+    #set("InactiveConnectionTimeoutSeconds", "30")
+
+def setAttributes_JDBCDataSource_PERSISTENCE_STORE():
+    cd("/JDBCSystemResources/PERSISTENCE_STORE/JDBCResource/PERSISTENCE_STORE")
+    print "setting attributes for mbean type JDBCDataSource"
+    set("Name", "PERSISTENCE_STORE")
+
+def setAttributes_JDBCDriverParams_PERSISTENCE_STORE():
+    cd("/JDBCSystemResources/PERSISTENCE_STORE/JDBCResource/PERSISTENCE_STORE/JDBCDriverParams/PERSISTENCE_STORE")
+    print "setting attributes for mbean type JDBCDriverParams"
+    set("Password", os.environ['ps_database_password'])
+    set("DriverName", "org.postgresql.Driver")
+    set("Url", psDatabaseURL)
+
 try:
     initConfigToScriptRun()
     startTransaction()
@@ -195,6 +242,16 @@ try:
     setAttributes_JDBCDataSource_NDELIUS()
     setAttributes_JDBCDriverParams_NDELIUS()
     setAttributes_JDBCConnectionPoolParams_NDELIUS_JTA()
+    # PERSISTENCE_STORE
+    create_JDBCSystemResource("/", "PERSISTENCE_STORE")
+    create_Property("/JDBCSystemResources/PERSISTENCE_STORE/JDBCResource/PERSISTENCE_STORE/JDBCDriverParams/PERSISTENCE_STORE/Properties/PERSISTENCE_STORE", "user")
+    setAttributesFor_PERSISTENCE_STORE()
+    setAttributesFor_user_PERSISTENCE_STORE()
+    setAttributes_JDBCDataSourceParams_PERSISTENCE_STORE()
+    #setAttributes_JDBCOracleParams_PERSISTENCE_STORE()
+    setAttributes_JDBCConnectionPoolParams_PERSISTENCE_STORE()
+    setAttributes_JDBCDataSource_PERSISTENCE_STORE()
+    setAttributes_JDBCDriverParams_PERSISTENCE_STORE()
     endTransaction()
 finally:
     endOfScriptRun()
