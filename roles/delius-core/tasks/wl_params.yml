@@ -39,8 +39,13 @@
     insertafter: '^WEBLOGIC_CLASSPATH="\$\{JAVA_HOME\}'
     line:        'WEBLOGIC_CLASSPATH="${WEBLOGIC_CLASSPATH}${CLASSPATHSEP}${WL_HOME}/server/lib/postgresql-42.2.12.jre7.jar"'
 
-- name: (main/wl_params) Add postgres driver to class path pt2
+- name: (main/wl_params) Add postgres driver to LD_LIBRARY_PATH
   lineinfile:
     path:        '{{ wl_home }}/common/bin/commEnv.sh'
-    insertafter: '^WEBLOGIC_CLASSPATH="\$\{JAVA_HOME\}'
-    line:        'export WEBLOGIC_CLASSPATH'
+    insertbefore: "^# set up WebLogic Server's class path"
+    line:        'LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${WL_HOME}/server/lib/postgresql-42.2.12.jre7.jar'
+
+
+
+
+
