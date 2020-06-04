@@ -43,7 +43,7 @@
   lineinfile:
     path:        '{{ wl_home }}/common/bin/commEnv.sh'
     insertbefore: "^# set up WebLogic Server's class path"
-    line:        'LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${WL_HOME}/server/lib/postgresql-42.2.12.jre7.jar'
+    line:        'export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${WL_HOME}/server/lib/postgresql-42.2.12.jre7.jar'
 
 
 
