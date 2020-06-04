@@ -31,6 +31,11 @@ database_min_pool_size: Connection pool minimum size for the NDELIUS datasource
 database_max_pool_size: Connection pool maximum size for the NDELIUS datasource
 setup_datasources: Whether to setup or skip setting up the database connection
 
+# Persistence Store Database
+ps_database_url: JDBC URL for the Persistence Store database connection
+ps_database_min_pool_size: Connection pool minimum size for the Persistence Store datasource
+ps_database_max_pool_size: Connection pool maximum size for the Persistence Store datasource
+
 # Alfresco
 alfresco_host: Alfresco hostname
 alfresco_port: Alfresco port
