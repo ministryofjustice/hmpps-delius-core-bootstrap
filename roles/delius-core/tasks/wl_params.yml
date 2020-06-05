@@ -33,6 +33,12 @@
     - -DDMS_Protocol=https
     - -Duser.timezone=Europe/London
 
+- name: (main/wl_params) Copy libs postgres driver
+  copy:
+    src: files/postgresql-42.2.12.jre7.jar
+    dest: '{{ wl_home }}/server/lib/postgresql-42.2.12.jre7.jar'
+    mode: 0755
+
 - name: (main/wl_params) Add postgres driver to class path
   lineinfile:
     path:        '{{ wl_home }}/common/bin/commEnv.sh'
