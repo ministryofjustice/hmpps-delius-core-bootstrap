@@ -28,8 +28,8 @@
 - name: (main/datasources) Create datasources
   shell: . ~/.bash_profile && ${WLS_HOME}/common/bin/wlst.sh /u01/software/setup_datasources.py
 
-  environment:
+- environment:
     weblogic_admin_password: '{{ weblogic_admin_password }}'
     database_password: '{{ database_password }}'
-    ps_database_password: "{{ lookup('aws_ssm', '/delius-core-dev/delius-core/delius-gdpr-database/db/admin_password', region=region) }}"
+    ps_database_password: "{{ lookup('aws_ssm', '/delius-perf/delius/delius-gdpr-database/db/admin_password', region=region) }}"
 
