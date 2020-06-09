@@ -205,8 +205,8 @@ def setAttributes_JDBCConnectionPoolParams_PERSISTENCE_STORE():
     print "setting attributes for mbean type JDBCConnectionPoolParams"
     set("TestTableName", "SQL SELECT 1")
     #set("CredentialMappingEnabled", "true")
-    set("MaxCapacity", 20)
-    set("MinCapacity", 10)
+    set("MaxCapacity", 100)
+    set("MinCapacity", 50)
     #set("InactiveConnectionTimeoutSeconds", "30")
 
 def setAttributes_JDBCDataSource_PERSISTENCE_STORE():
