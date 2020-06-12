@@ -189,6 +189,12 @@ def setAttributesFor_user_PERSISTENCE_STORE():
     set("Value", "postgres")
     set("Name", "user")
 
+def setAttributesFor_sslmode_PERSISTENCE_STORE():
+    cd("/JDBCSystemResources/PERSISTENCE_STORE/JDBCResource/PERSISTENCE_STORE/JDBCDriverParams/PERSISTENCE_STORE/Properties/PERSISTENCE_STORE/Properties/sslmode")
+    print "setting attributes for mbean type JDBCProperty"
+    set("Value", "disable")
+    set("Name", "sslmode")
+
 def setAttributes_JDBCDataSourceParams_PERSISTENCE_STORE():
     cd("/JDBCSystemResources/PERSISTENCE_STORE/JDBCResource/PERSISTENCE_STORE/JDBCDataSourceParams/PERSISTENCE_STORE")
     print "setting attributes for mbean type JDBCDataSourceParams"
@@ -247,6 +253,7 @@ try:
     create_Property("/JDBCSystemResources/PERSISTENCE_STORE/JDBCResource/PERSISTENCE_STORE/JDBCDriverParams/PERSISTENCE_STORE/Properties/PERSISTENCE_STORE", "user")
     setAttributesFor_PERSISTENCE_STORE()
     setAttributesFor_user_PERSISTENCE_STORE()
+    setAttributesFor_sslmode_PERSISTENCE_STORE()
     setAttributes_JDBCDataSourceParams_PERSISTENCE_STORE()
     #setAttributes_JDBCOracleParams_PERSISTENCE_STORE()
     setAttributes_JDBCConnectionPoolParams_PERSISTENCE_STORE()
