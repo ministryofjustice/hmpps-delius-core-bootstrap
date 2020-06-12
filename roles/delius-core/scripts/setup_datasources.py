@@ -251,6 +251,7 @@ try:
     # PERSISTENCE_STORE
     create_JDBCSystemResource("/", "PERSISTENCE_STORE")
     create_Property("/JDBCSystemResources/PERSISTENCE_STORE/JDBCResource/PERSISTENCE_STORE/JDBCDriverParams/PERSISTENCE_STORE/Properties/PERSISTENCE_STORE", "user")
+    create_Property("/JDBCSystemResources/PERSISTENCE_STORE/JDBCResource/PERSISTENCE_STORE/JDBCDriverParams/PERSISTENCE_STORE/Properties/PERSISTENCE_STORE", "sslmode")
     setAttributesFor_PERSISTENCE_STORE()
     setAttributesFor_user_PERSISTENCE_STORE()
     setAttributesFor_sslmode_PERSISTENCE_STORE()
