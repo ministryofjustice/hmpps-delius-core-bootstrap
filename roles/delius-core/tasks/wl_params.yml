@@ -32,4 +32,6 @@
     - -Dcom.sun.management.jmxremote.authenticate=false
     - -DDMS_Protocol=https
     - -Duser.timezone=Europe/London
-    - -Dweblogic.security.SSL.ignoreHostnameVerification=true
+    - -Djava.protocol.handler.pkgs=com.sun.net.ssl.internal.www.protocol
+    - -Dssl.SocketFactory.provider=com.sun.net.ssl.internal.SSLSocketFactoryImpl
+    - -DUseSunHttpHandler=true
