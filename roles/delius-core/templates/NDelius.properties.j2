@@ -63,3 +63,14 @@ APTRACKER_ERRORS_SECRET={{ usermanagement_secret }}
 APTRACKER_ERRORS_URL={{ aptracker_api_errors_url | default('') }}
 
 GDPR_URL=/gdpr/ui/homepage
+
+{% if ndelius_oauth_config is defined %}
+OAUTH_CLIENT_ID={{ ndelius_oauth_config.client_id }}
+OAUTH_CLIENT_SECRET={{ lookup('aws_ssm', ndelius_oauth_config.client_secret, region=region) }}
+OAUTH_URL={{ ndelius_oauth_config.url }}
+OAUTH_CALLBACK_URL={{ ndelius_oauth_config.callback_url }}
+OAUTH_USER_INFO_ENDPOINT={{ ndelius_oauth_config.user_info_endpoint }}
+OAUTH_DELIUS_USERNAME_ATTRIBUTE={{ ndelius_oauth_config.username_attribute }}
+OAUTH_LOGIN_NAME={{ ndelius_oauth_config.display_name }}
+OAUTH_DEFAULT_SCOPE={{ ndelius_oauth_config.scope }}
+{% endif %}
