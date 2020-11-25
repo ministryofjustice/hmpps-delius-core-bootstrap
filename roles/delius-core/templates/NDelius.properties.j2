@@ -64,7 +64,11 @@ APTRACKER_ERRORS_URL={{ aptracker_api_errors_url | default('') }}
 
 GDPR_URL=/gdpr/ui/homepage
 
-PREPARE_CASE_FOR_SENTENCE_URL={{prepare_a_case_url}}
+# Prepare a case for sentencing
+{% if prepare_a_case_url is defined %}
+PREPARE_CASE_FOR_SENTENCE_URL={{prepare_a_case_url | default('')}}
+{% endif %}
+
 
 {% if ndelius_oauth_config is defined %}
 OAUTH_CLIENT_ID={{ ndelius_oauth_config.client_id }}
