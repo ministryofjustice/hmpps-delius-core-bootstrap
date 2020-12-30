@@ -65,3 +65,5 @@ push_jmx_metric 'InboundQueueSize' 'QueueSize' 'org.apache.activemq:type=Broker,
 push_jmx_metric 'InboundQueueDispatchCount' 'DispatchCount' 'org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=NDELIUS_INBOUND'
 push_jmx_metric 'OutboundQueueSize' 'QueueSize' 'org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=NDELIUS_OUTBOUND'
 push_jmx_metric 'OutboundQueueDispatchCount' 'DispatchCount' 'org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=NDELIUS_OUTBOUND'
+push_jmx_metric 'DeadLetterQueueSize' 'QueueSize' 'org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=DLQ'
+push_jmx_metric 'DeadLetterQueueDispatchCount' 'DispatchCount' 'org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=DLQ'
