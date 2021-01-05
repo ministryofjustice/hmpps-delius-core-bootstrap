@@ -143,8 +143,8 @@
 	 -->
 	<bean id="remoteCF" class="org.apache.activemq.PatchedActiveMQConnectionFactory" depends-on="broker">
 		<property name="brokerURL" value="{{ remote_broker_url | regex_replace('\.:', ':') }}" />
-		<property name="userName" value="{{ remote_broker_username }}" />
-		<property name="password" value="{{ remote_broker_password }}" />
+		<property name="userName" value="{{ lookup('aws_ssm', ssm_prefix + tier_name + '-domain/remote_broker_username') }}" />
+		<property name="password" value="{{ lookup('aws_ssm', ssm_prefix + tier_name + '-domain/remote_broker_password') }}" />
 	</bean>
 
 	<bean id="java.lang.Integer.MAX_VALUE" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />

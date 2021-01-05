@@ -5,11 +5,11 @@
     wl_home: /u01/app/oracle/middleware/wlserver_10.3
     wl_port: 7001
     domain_home: '/u01/app/oracle/middleware/user_projects/domains/{{ domain_name }}'
-
-- name: (main) Debug vars
-  debug:
-    msg: "{{ vars }}"
-    verbosity: 2
+    ssm_prefix: '/{{ environment_name }}/{{ project_name }}/'
+    weblogic_admin_password: "{{ lookup('aws_ssm', ssm_prefix + tier_name + '-domain/weblogic_admin_password') }}"
+    database_password: "{{ lookup('aws_ssm', ssm_prefix + 'delius-database/db/delius_pool_password') }}"
+    ldap_admin_password: "{{ lookup('aws_ssm', ssm_prefix + 'apacheds/apacheds/ldap_admin_password') }}"
+    usermanagement_secret: "{{ lookup('aws_ssm', ssm_prefix + 'umt/umt/delius_secret') }}"
 
 - name: (main) set tag to indicate deployment
   ec2_tag:
