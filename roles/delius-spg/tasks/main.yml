@@ -7,13 +7,18 @@
     group: oinstall
     mode: 0755
 
-- name: Create activemq data directory
+- name: Create ActiveMQ data directory
+  when: activemq_efs_dns_name is not defined
   file:
     path: "{{ activemq_data_folder }}"
     state: directory
     owner: oracle
     group: oinstall
-    mode: 0755
+    mode: 0700
+
+- name: Mount ActiveMQ data directory
+  when: activemq_efs_dns_name is defined
+  include: efs.yml
 
 - name: Download ActiveMQ application
   aws_s3:

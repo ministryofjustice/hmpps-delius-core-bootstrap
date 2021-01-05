@@ -1,0 +1,50 @@
+---
+
+- name: (efs) Install packages
+  yum:
+    name: rpm-build
+    state: present
+
+- name: (efs) Clone AWS efs-utils
+  git:
+    repo: https://github.com/aws/efs-utils.git
+    dest: /u01/software/efs-utils
+
+- name: (efs) Build AWS efs-utils
+  make:
+    chdir: /u01/software/efs-utils
+    target: rpm
+
+- name: (efs) Find RPM file
+  find:
+    path: /u01/software/efs-utils/build
+    pattern: '*.rpm'
+  register: rpm_files
+
+- name: (efs) Install AWS efs-utils
+  yum:
+    name: '{{ rpm_files.files[0].path }}'
+    state: present
+
+- name: (efs) Create mount directory
+  file:
+    path: '{{ activemq_data_folder }}'
+    state: directory
+    mode: a+rw
+
+- name: (efs) Append to fstab file
+  lineinfile:
+    path: /etc/fstab
+    line: '{{ activemq_efs_dns_name }}:/ {{ activemq_data_folder }} efs _netdev 0 0'
+
+- name: (efs) Mount disks
+  command: mount -a
+  args:
+    warn: no
+
+- name: (efs) Set directory permissions
+  file:
+    path: '{{ activemq_data_folder }}'
+    owner: oracle
+    group: oinstall
+    mode: 0700
