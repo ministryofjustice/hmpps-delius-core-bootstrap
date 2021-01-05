@@ -9,10 +9,10 @@
 
 - name: (main) Fetch secrets
   set_fact:
-    weblogic_admin_password: "{{ lookup('aws_ssm', ssm_prefix + tier_name + '-domain/weblogic_admin_password') }}"
-    database_password: "{{ lookup('aws_ssm', ssm_prefix + 'delius-database/db/delius_pool_password') }}"
-    ldap_admin_password: "{{ lookup('aws_ssm', ssm_prefix + 'apacheds/apacheds/ldap_admin_password') }}"
-    usermanagement_secret: "{{ lookup('aws_ssm', ssm_prefix + 'umt/umt/delius_secret') }}"
+    weblogic_admin_password: "{{ lookup('aws_ssm', ssm_prefix + tier_name + '-domain/weblogic_admin_password', region=region) }}"
+    database_password: "{{ lookup('aws_ssm', ssm_prefix + 'delius-database/db/delius_pool_password', region=region) }}"
+    ldap_admin_password: "{{ lookup('aws_ssm', ssm_prefix + 'apacheds/apacheds/ldap_admin_password', region=region) }}"
+    usermanagement_secret: "{{ lookup('aws_ssm', ssm_prefix + 'umt/umt/delius_secret', region=region) }}"
   no_log: true
 
 - name: (main) set tag to indicate deployment
