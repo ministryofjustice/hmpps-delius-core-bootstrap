@@ -6,10 +6,14 @@
     wl_port: 7001
     domain_home: '/u01/app/oracle/middleware/user_projects/domains/{{ domain_name }}'
     ssm_prefix: '/{{ environment_name }}/{{ project_name }}/'
+
+- name: (main) Fetch secrets
+  set_fact:
     weblogic_admin_password: "{{ lookup('aws_ssm', ssm_prefix + tier_name + '-domain/weblogic_admin_password') }}"
     database_password: "{{ lookup('aws_ssm', ssm_prefix + 'delius-database/db/delius_pool_password') }}"
     ldap_admin_password: "{{ lookup('aws_ssm', ssm_prefix + 'apacheds/apacheds/ldap_admin_password') }}"
     usermanagement_secret: "{{ lookup('aws_ssm', ssm_prefix + 'umt/umt/delius_secret') }}"
+  no_log: true
 
 - name: (main) set tag to indicate deployment
   ec2_tag:
