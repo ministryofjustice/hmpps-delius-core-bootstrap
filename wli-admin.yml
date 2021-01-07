@@ -1,7 +1,0 @@
-- hosts: wli
-  become: true
-  become_user: root
-  become_method: sudo
-  roles:
-    - { role: delius-core }
-    - { role: delius-interfaces }

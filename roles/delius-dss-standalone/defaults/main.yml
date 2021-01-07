@@ -1,8 +1,0 @@
-offlocURL: "https://localhost:4443/" #Location of the offloc zip file. Must be HTTPS̼ and not HTTP.
-ndeliusDSSURL: "http://localhost:7001/NDeliusDSS-war" #Load balancer URL for the interface domain
-offlocUsername: "DSS-User"
-offlocPassword: "Password1"
-ndeliusDSSUsername: "DSS-User"
-ndeliusDSSPassword: "Password1"
-
-encryptionIV: "{{ (inventory_hostname | to_uuid | password_hash('sha512'))[:16] }}"
