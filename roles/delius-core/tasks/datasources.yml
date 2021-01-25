@@ -1,11 +1,32 @@
 ---
 
+- name: (main/datasources) Temporarily install sqlplus to check database health
+  become: yes
+  become_user: root
+  shell: |
+    yum install -y libaio
+    rpm -i https://download.oracle.com/otn_software/linux/instantclient/oracle-instantclient-basic-linuxx64.rpm
+    rpm -i https://download.oracle.com/otn_software/linux/instantclient/oracle-instantclient-sqlplus-linuxx64.rpm
+
 - name: (main/datasources) Wait for database to be up (max 6 hours)
-  wait_for:
-    host: '{{ primary_db_host }}'
-    port: 1521
-    sleep: 30
-    timeout: 21600
+  shell: |
+    sqlplus -L 'delius_pool/${database_password}@{{ database_url | replace('jdbc:oracle:thin:', '') }}' <<EOF
+    select 1 from dual;
+    EOF
+  environment:
+    database_password: '{{ database_password }}'
+  register: db_healthcheck
+  until: db_healthcheck is success
+  retries: 720
+  delay: 30
+
+- name: (main/datasources) Remove sqlplus
+  become: yes
+  become_user: root
+  shell: |
+    rpm -e oracle-instantclient-sqlplus
+    rpm -e oracle-instantclient-basic
+    yum remove -y libaio
 
 - name: (main/datasources) Copy domain.properties
   template:
