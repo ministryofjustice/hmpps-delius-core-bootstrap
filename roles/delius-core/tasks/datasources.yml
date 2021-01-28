@@ -2,7 +2,7 @@
 
 - name: (main/datasources) Check if sqlplus is installed
   yum:
-    list: oracle-instantclient-sqlplus
+    list: libaio
   register: yum_sqlplus
 
 - name: (main/datasources) Temporarily install sqlplus to check database health
