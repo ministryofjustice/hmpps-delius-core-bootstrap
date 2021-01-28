@@ -5,6 +5,8 @@
     list: libaio
   register: yum_sqlplus
 
+# SQLPLus has since been added into the AMI.
+# However we check here and install it directly from Oracle if required, to maintain backward-compatibilty while the AMI is still being rolled out.
 - name: (main/datasources) Temporarily install sqlplus to check database health
   when: yum_sqlplus.results | selectattr("yumstate", "match", "installed") | list | length == 0
   become: yes
