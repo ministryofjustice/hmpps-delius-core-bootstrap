@@ -1,11 +1,45 @@
 ---
 
+- name: (main/datasources) Check if sqlplus is installed
+  yum:
+    list: libaio
+  register: yum_sqlplus
+
+# SQLPLus has since been added into the AMI.
+# However we check here and install it directly from Oracle if required, to maintain backward-compatibilty while the AMI is still being rolled out.
+- name: (main/datasources) Temporarily install sqlplus to check database health
+  when: yum_sqlplus.results | selectattr("yumstate", "match", "installed") | list | length == 0
+  become: yes
+  become_user: root
+  yum:
+    name:
+      - libaio
+      - https://download.oracle.com/otn_software/linux/instantclient/oracle-instantclient-basic-linuxx64.rpm
+      - https://download.oracle.com/otn_software/linux/instantclient/oracle-instantclient-sqlplus-linuxx64.rpm
+    state: present
+
 - name: (main/datasources) Wait for database to be up (max 6 hours)
-  wait_for:
-    host: '{{ primary_db_host }}'
-    port: 1521
-    sleep: 30
-    timeout: 21600
+  shell:
+    cmd: |
+      sqlplus -L "delius_pool/${database_password}@{{ database_url | regex_replace('^.*@', '') }}" <<EOF
+      select 1 from dual;
+      EOF
+  environment:
+    database_password: '{{ database_password }}'
+  register: db_healthcheck
+  until: db_healthcheck is success
+  retries: 720
+  delay: 30
+
+- name: (main/datasources) Remove sqlplus
+  become: yes
+  become_user: root
+  yum:
+    name:
+      - oracle-instantclient-sqlplus
+      - oracle-instantclient-basic
+      - libaio
+    state: absent
 
 - name: (main/datasources) Copy domain.properties
   template:
