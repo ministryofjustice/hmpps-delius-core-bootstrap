@@ -1,6 +1,12 @@
 ---
 
+- name: (main/datasources) Check if sqlplus is installed
+  yum:
+    list: oracle-instantclient-sqlplus
+  register: yum_sqlplus
+
 - name: (main/datasources) Temporarily install sqlplus to check database health
+  when: yum_sqlplus.results | selectattr("yumstate", "match", "installed") | list | length == 0
   become: yes
   become_user: root
   yum:
