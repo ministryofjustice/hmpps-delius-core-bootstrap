@@ -82,8 +82,8 @@ OAUTH_DEFAULT_SCOPE={{ ndelius_oauth_config.scope }}
 {% endif %}
 
 {% if merge_config is defined %}
-MERGE_URL= {{ merge_ui_url }}
-MERGE_API_URL= {{ merge_api_url }}
+MERGE_URL=/merge/ui
+MERGE_API_URL=/merge/api
 MERGE_SECRET={{ lookup('aws_ssm', merge_config.client_secret, region=region) }}
 MERGE_OAUTH_URL={{ usermanagement_url }}
 NDELIUS_CLIENT_ID=ndelius.client
