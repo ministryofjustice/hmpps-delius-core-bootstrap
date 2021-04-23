@@ -80,3 +80,9 @@ OAUTH_DELIUS_USERNAME_ATTRIBUTE={{ ndelius_oauth_config.username_attribute }}
 OAUTH_LOGIN_NAME={{ ndelius_oauth_config.display_name }}
 OAUTH_DEFAULT_SCOPE={{ ndelius_oauth_config.scope }}
 {% endif %}
+
+MERGE_URL=/merge/ui/
+MERGE_API_URL=/merge/api/
+MERGE_SECRET={{ lookup('aws_ssm', ssm_prefix + 'merge/api/client_secret', region=region) }}
+MERGE_OAUTH_URL={{ usermanagement_url }}
+NDELIUS_CLIENT_ID=ndelius.client
